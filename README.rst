@@ -1,5 +1,5 @@
-Adam Wright's SaltStack pillar configuration
-============================================
+Adam Wright's SaltStack pillar setup
+====================================
 
 My (still emerging) pillar configuration - currently, rather than using
 Salt's notion of environments, minions are targetted in pillar SLS files.
