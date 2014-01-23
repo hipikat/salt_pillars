@@ -1,5 +1,7 @@
 # Project (Salt Pillar) configuration for hipikat.org
 
+{% from 'projects/hipikat_org-rewrites.sls' import hipikat_rewrites %}
+
 # Return YAML configuration for the project based on arguments
 {% macro hipikat_org() %}
   {% set fqdn = kwargs.get('fqdn', 'hipikat.org') %}
@@ -42,8 +44,7 @@
         locations:
           '/':
             directives:
-              - rewrite "^/fa/?$"   http://www.furaffinity.net/user/hipikat/         permanent
-              - rewrite "^/g\+/?$"  https://plus.google.com/u/0/+AdamWright-Hipikat  permanent
+              {{ hipikat_rewrites()|indent(14) }}
             pass_upstream: true
           '/media':
             alias: var/media
