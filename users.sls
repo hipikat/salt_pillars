@@ -8,6 +8,7 @@ users:
     shell: /bin/bash
     groups:
       - root
+      - www-data
     dotfiles:
       repository: https://github.com/hipikat/dotfiles.git
       install_cmd: 'bash bin/install.sh --force'

@@ -6,5 +6,8 @@ base:
     - users       # System administrators
 
   # Test box for developing the projects/django_project formulas
-  'greenowl':
-    - droplets.greenowl
+  'foxypig':
+    - droplets.foxypig
+
+  'pinkdoge':
+    - droplets.pinkdoge

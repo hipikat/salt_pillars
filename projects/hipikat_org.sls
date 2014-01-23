@@ -1,31 +1,63 @@
-
-# Define basic configuration for the project
-
-
-
-# ... TODO: Ask yourself if there's enough logic getting into this thing
-# that we should use a Python renderer for it. If we do, we can't have
-# Jinja macros imported into the host VM SLS files. So obviously we should
-# make them Python renderers too? Would that be so bad? That might be good.
-# How do we import project config defined here into the host VM SLS?
-
-
+# Project (Salt Pillar) configuration for hipikat.org
 
 # Return YAML configuration for the project based on arguments
-{% macro _hipikat_org() %}
-git_url: https://github.com/hipikat/hipikat.org.git
-settings: {{ 'Production' if 'settings' not in kwargs else kwargs['settings'] }}
-envdir: var/env
-requirements: etc/requirements.txt
+{% macro hipikat_org() %}
+  {% set fqdn = kwargs.get('fqdn', 'hipikat.org') %}
+  {% set deploy_name = kwargs.get('name', 'hipikat.org') %}
+  {{- deploy_name ~ ':' }}
+    git_url: https://github.com/hipikat/hipikat.org.git
+    rev: {{ kwargs.get('rev', 'master') }}
+    db_admins:
+      - hipikat
+    requirements: etc/requirements.txt
+    libdir: lib
+    libs:
+      django-cinch: https://github.com/hipikat/django-cinch.git
+      feincms-elephantblog: https://github.com/hipikat/feincms-elephantblog.git
+      django-revkom: https://github.com/hipikat/django-revkom.git
+    port: {{ kwargs.get('port', 80) }}
+    envdir: var/env
+    env:
+      DJANGO_SETTINGS_CLASS: {{ kwargs.get('settings', 'Production') }}
+      DJANGO_ALLOWED_HOSTS: [{{ '.' ~ fqdn }}]
+    pythonpaths:
+      - src
+      - etc
+      - lib/django-cinch
+      - lib/feincms-elephantblog
+      - lib/django-revkom
+    post_install:
+      - if [ ! -f var/env/DJANGO_SECRET_KEY ]; then {# -#}
+        {#- -#}scripts/make_secret_key.py > var/env/DJANGO_SECRET_KEY; fi
+    wsgi_module: hipikat.wsgi
+    settings_module: hipikat.settings
+    run_uwsgi: {{ kwargs.get('run_uwsgi', true) }}
+    enabled: {{ kwargs.get('enabled', true) }}
+    watch: {{ kwargs.get('watch', false) }}
+    watch_dirs: {{ kwargs.get('watch_dirs',  ['etc', 'lib', 'src', 'var/env']) }}
+    nginx_servers:
+      {{ fqdn }}:
+        return: 301 http://www.{{ fqdn }}$request_uri
+      www.{{ fqdn }}:
+        locations:
+          '/':
+            directives:
+              - rewrite "^/fa/?$"   http://www.furaffinity.net/user/hipikat/         permanent
+              - rewrite "^/g\+/?$"  https://plus.google.com/u/0/+AdamWright-Hipikat  permanent
+            pass_upstream: true
+          '/media':
+            alias: var/media
+          '/static':
+            alias: var/static
+      blog.{{ fqdn }}:
+        locations:
+          '/':
+            pass_upstream: true
 {% endmacro %}
 
-# Wrap the project's settings in a YAML dict name matching the name of
-# the virtualenv, if one is provided
-{% macro hipikat_org() %}
-  {% if 'virtualenv_name' in kwargs %}
-    {{- kwargs['virtualenv_name'] }}
-    {{- _hipikat_org(**kwargs)|indent(2, true) }}
-  {% else %}
-    {{- _hipikat_org(**kwargs) }} 
-  {% endif %}
+{% macro watch_dirs() %}
+- 'etc'
+- 'lib'
+- 'src'
+- 'var/env'
 {% endmacro %}
