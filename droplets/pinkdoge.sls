@@ -11,18 +11,23 @@
     'name': 'hipi_staging',
     'settings': 'Staging',
     'fqdn': 'hipikat.org-staging',
+    'enabled': false,
 } %}
 
 {% set hipikat_dev = { 
     'name': 'hipi_dev',
     'settings': 'Development',
-    'fqdn': grains['host'] ~ 'dev',
-    'port': 8870,
+    'fqdn': grains['host'],
     'watch': true,
-    'enabled': false,
+    'enabled': true,
+    'http_basic_auth': true,
 } %}
 
 django_projects:
   {{ hipikat_org(**hipikat_prod)|indent(2) }}
   {{ hipikat_org(**hipikat_staging)|indent(2) }}
   {{ hipikat_org(**hipikat_dev)|indent(2) }}
+
+nginx_default:
+  directives:
+    - return 444

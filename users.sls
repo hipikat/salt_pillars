@@ -1,6 +1,8 @@
 ### System administrators. Just me so far.
 ##########################################
 
+{% from 'users-secrets.sls' import hipikat_htpasswd %}
+
 users:
   hipikat:
     fullname: Adam Wright
@@ -20,3 +22,4 @@ H1WLwbkgT8nOtYQskuIwcoHERp7GkSjCcI1qGYyILRYPIKmwC2mXyCFtb47PejAS8AhnT9XJ7luPuOL0
 XjwwBjU1Hr9ZDZMImcki4rUpPcjKhgvsHI/eALO0FcV/4BCYrBKTTl1S8V1nolMb+D4VCpr/a43akqARtr04QKZCQZq/{# -#}
 7/q8Dts8f4TaR/YxXEK2n4TZsWdnsxkmGyQwdS0i9qUlyxdXSGLYW9vn+aceOgaYA5RiU/CO2wVm7SCungHjCBgPOQhr{# -#}
 bBj6RYWBv3Od1yYsRHad zeno@trepp
+    htpasswd: {{ hipikat_htpasswd() }}

@@ -9,7 +9,7 @@
   {{- deploy_name ~ ':' }}
     git_url: https://github.com/hipikat/hipikat.org.git
     rev: {{ kwargs.get('rev', 'master') }}
-    db_admins:
+    admins:
       - hipikat
     requirements: etc/requirements.txt
     libdir: lib
@@ -37,7 +37,8 @@
     enabled: {{ kwargs.get('enabled', true) }}
     watch: {{ kwargs.get('watch', false) }}
     watch_dirs: {{ kwargs.get('watch_dirs',  ['etc', 'lib', 'src', 'var/env']) }}
-    nginx_servers:
+    http_basic_auth: {{ kwargs.get('http_basic_auth', false) }}
+    servers:
       {{ fqdn }}:
         return: 301 http://www.{{ fqdn }}$request_uri
       www.{{ fqdn }}:
