@@ -4,10 +4,11 @@
 base:
   '*':            # Every minion gets...
     - users       # System administrators
+    - miner
 
-  # Test box for developing the projects/django_project formulas
-  'foxypig':
-    - droplets.foxypig
+  #'uwa-visualid':
+  #  - machines.uwa-visualid
+  
+  'hipi-dev1':
+    - machines.hipi-dev1
 
-  'pinkdoge':
-    - droplets.pinkdoge
