@@ -29,8 +29,9 @@
       - lib/feincms-elephantblog
       - lib/django-revkom
     post_install:
-      - if [ ! -f var/env/DJANGO_SECRET_KEY ]; then {# -#}
-        {#- -#}scripts/make_secret_key.py > var/env/DJANGO_SECRET_KEY; fi
+      make_secret_key:
+          run: scripts/make_secret_key.py > var/env/DJANGO_SECRET_KEY
+          onlyif: 'file.absent: %cwd%/var/env/DJANGO_SECRET_KEY'
     wsgi_module: hipikat.wsgi
     settings_module: hipikat.settings
     run_uwsgi: {{ kwargs.get('run_uwsgi', true) }}
