@@ -14,6 +14,10 @@ users:
     dotfiles:
       repository: https://github.com/hipikat/dotfiles.git
       install_cmd: 'bash bin/install.sh --force'
+    uses_sys_packages:
+      - exuberant-ctags
+      - mosh
+      - screen
     ssh_auth:
       # For some reason this public key, as a single line,
       # makes vim hang when syntax highlighting is enabled.
