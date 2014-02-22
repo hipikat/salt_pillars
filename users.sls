@@ -7,6 +7,8 @@ users:
   hipikat:
     fullname: Adam Wright
     sudouser: True
+    sudo_rules:
+      - 'ALL=(ALL) NOPASSWD: ALL'
     shell: /bin/bash
     groups:
       - root
