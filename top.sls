@@ -1,4 +1,5 @@
-### Top-level pillar - map configuration objects to minions
+#
+# Top-level pillar - map configuration objects to minions
 ##########################################
 
 base:
@@ -6,7 +7,7 @@ base:
     - users             # System administrators
     - miner             # Basic Salt Mine setup; feel free to extend it
  
-  # Testing and development of hipikat.org 
+  # Testing and development cluster for hipikat.org 
   'clowder':
     - machines.clowder
 
