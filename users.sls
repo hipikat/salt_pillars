@@ -15,12 +15,14 @@ users:
       - www-data
     shell: /bin/bash
     dotfiles:
-      git_repo: https://github.com/hipikat/dotfiles.git
-      install_cmd: 'bash bin/install.sh --force'
+      git_url: https://github.com/hipikat/dotfiles.git
+      install_cmd: 'python plumb_files.py -U -f'
     uses_sys_packages:
       - exuberant-ctags
       - mosh
       - screen
+    uses_py_packages:
+      - flake8
     ssh_auth:
       - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDKyCuPu+CjJ8z/Xiy8p57JxtbHwCvZe/KPKjkoLauObR9S{# -#}
 H1WLwbkgT8nOtYQskuIwcoHERp7GkSjCcI1qGYyILRYPIKmwC2mXyCFtb47PejAS8AhnT9XJ7luPuOL0En7X3las3LfZ{# -#}
