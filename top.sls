@@ -4,11 +4,12 @@
 
 base:
   '*':                  # Every minion gets...
-    - users             # System administrators
+    - users             # System administrator user accounts
     - miner             # Basic Salt Mine setup; feel free to extend it
+    - sys_packages      # Useful system, system-Python, etc. packages
 
   'mr-*':
-    - saltlick
+    - saltlick.master
  
   # Testing and development cluster for hipikat.org 
   'clowder':

@@ -2,13 +2,15 @@
 
 {% from 'projects/hipikat_org-rewrites.sls' import hipikat_rewrites %}
 
-# Return YAML configuration for the project based on arguments
+# Return YAML config for the hipikat.org project.
 {% macro hipikat_org() %}
   {% set fqdn = kwargs.get('fqdn', 'hipikat.org') %}
   {% set deploy_name = kwargs.get('name', 'hipikat.org') %}
   {{- deploy_name ~ ':' }}
     git_url: https://github.com/hipikat/hipikat.org.git
-    rev: {{ kwargs.get('rev', 'master') }}
+    {% if 'rev' in kwargs %}
+    rev: {{ kwargs['rev'] }}
+    {% endif %}
     admins:
       - hipikat
     requirements: etc/requirements.txt
