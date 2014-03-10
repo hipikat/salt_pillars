@@ -1,17 +1,18 @@
 #
-# Top-level pillar - map configuration objects to minions
-##########################################
+# Minion pillar configuration
+####################################################
 
 base:
-  '*':                  # Every minion gets...
+  # All minions get...
+  '*':
     - users             # System administrator user accounts
-    - miner             # Basic Salt Mine setup; feel free to extend it
+    - miner             # Basic Salt Mine setup
     - sys_packages      # Useful system, system-Python, etc. packages
 
+  # Top-level Salt masters
   'mr-*':
     - saltlick.master
  
-  # Testing and development cluster for hipikat.org 
+  # Syndicated master for testing and development
   'clowder':
     - machines.clowder
-

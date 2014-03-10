@@ -1,3 +1,7 @@
+#
+# Packages to be installed on all minions
+####################################################
+
 
 system_packages:
   - language-pack-en    # Locales
