@@ -49,6 +49,7 @@
       {% endfor %}
 
     # Requirements
+    python_version: {{ kwargs.get('python_version', '2.7.6') }}
     python_requirements: etc/requirements.txt
     libdir: lib
     git_lib_urls:
