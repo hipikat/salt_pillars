@@ -12,6 +12,14 @@
     'http_basic_auth': true,
 } %}
 
+{% set hipikat3_dev = { 
+    'name': 'hipi3-dev',
+    'settings': 'Development',
+    'python_version': '3.3.5',
+    'fqdn': 'dev3.hpk.io',
+    'http_basic_auth': true,
+} %}
+
 
 # Have Chippery configure the full web stacks for projects
 chippery:

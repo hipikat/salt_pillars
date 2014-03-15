@@ -7,7 +7,7 @@
 
 # Default watch directories; if `watch: true`, restart the app server
 # if any files under these directories changes.
-{% macro default_watch_dirs() %}
+{% macro watch_dirs() %}
 - etc
 - lib
 - src
@@ -15,7 +15,7 @@
 {% endmacro %}
 
 # Paths relative to the project source added to the Python Path
-{% macro default_python_paths() %}
+{% macro python_paths() %}
 - src
 - etc
 - lib/django-cinch
@@ -44,21 +44,17 @@
       - pillow
       - postgresql
       - memcached
-      {% for include in kwargs.get('extra_includes', []) %}
-      - {{ include }}
-      {% endfor %}
 
     # Requirements
     python_version: {{ kwargs.get('python_version', '2.7.6') }}
     python_requirements: etc/requirements.txt
-    libdir: lib
-    git_lib_urls:
-      django-cinch: https://github.com/hipikat/django-cinch.git
+    lib_dir: lib
+    git_libs:
+      django-cinch:
+        url: https://github.com/hipikat/django-cinch.git
+        rev: master
       feincms-elephantblog: https://github.com/hipikat/feincms-elephantblog.git
       django-revkom: https://github.com/hipikat/django-revkom.git
-      {% for key, val in kwargs.get('extra_git_libs', {}) %}
-      {{ key }}: {{ val }}
-      {% endfor %}
 
     # App configuration
     wsgi_module: hipikat.wsgi
@@ -68,32 +64,21 @@
       DJANGO_SETTINGS_MODULE: hipikat.settings
       DJANGO_SETTINGS_CLASS: {{ kwargs.get('settings', 'Production') }}
       DJANGO_ALLOWED_HOSTS: [{{ '.' ~ fqdn }}]
-      {% for key, val in kwargs.get('extra_env_vars', {}) %}
-      {{ key }}: {{ val }}
-      {% endfor %}
-    extra_python_paths:
-      {% if 'python_paths' in kwargs %}
-      {{ kwargs['python_paths']|indent(6) }}
-      {% else %}
-      {{ default_python_paths()|indent(6) }}
-      {% endif %}
+    python_paths:
+      {{ python_paths()|indent(6) }}
     watch_dirs: 
-      {% if 'watch_dirs' in kwargs %}
-      {{ kwargs['watch_dirs']|indent(6) }}
-      {% else %}
-      {{ default_watch_dirs()|indent(6) }}
-      {% endif %}
+      {{ watch_dirs()|indent(6) }}
 
     # Bootstrap triggers
     post_install:
       make_secret_key:
           run: scripts/make_secret_key.py > var/env/DJANGO_SECRET_KEY
-          onlyif: 'file.absent: %cwd%/var/env/DJANGO_SECRET_KEY'
+          onlyif: test ! -f var/env/DJANGO_SECRET_KEY
 
     # Runtime switches
-    enabled: {{ kwargs.get('enabled', true) }}
-    run_uwsgi: {{ kwargs.get('run_uwsgi', true) }}
-    watch: {{ kwargs.get('watch', false) }}
+    site_enabled: {{ kwargs.get('enabled', true) }}
+    wsgi_enabled: {{ kwargs.get('run_uwsgi', true) }}
+    reload_watch: {{ kwargs.get('watch', false) }}
     
     # Web server configuration
     http_basic_auth: {{ kwargs.get('http_basic_auth', false) }}
