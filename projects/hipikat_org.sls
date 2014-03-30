@@ -33,9 +33,7 @@
 
     # Project source
     git_url: https://github.com/hipikat/hipikat.org.git
-    {% if 'git_rev' in kwargs %}
-    git_rev: {{ kwargs['git_rev'] }}
-    {% endif %}
+    git_rev: {{ kwargs.get('git_rev', 'master') }}
 
     # Project administrators
     owner: hipikat
@@ -57,8 +55,8 @@
     # Requirements
     python_version: {{ kwargs.get('python_version', '3.4.0') }}
     python_requirements: etc/requirements.txt
-    lib_dir: lib
-    git_libs:
+    lib_root: lib
+    libs:
       django-cinch: https://github.com/hipikat/django-cinch.git
       django-revkom: https://github.com/hipikat/django-revkom.git
       {% if kwargs.get('git_rev') == 'djcms3' %}
@@ -85,6 +83,7 @@
     port: {{ kwargs.get('port', 80) }}
     envdir: var/env
     env:
+      DJANGO_DATABASE_URL: postgres://hipikat:insecure@localhost/{{ deploy_name }}
       DJANGO_SETTINGS_MODULE: hipikat.settings
       DJANGO_SETTINGS_CLASS: {{ settings }}
       DJANGO_ROOT_FQDN: {{ fqdn }}
@@ -99,7 +98,7 @@
         run: scripts/make_secret_key.py > var/env/DJANGO_SECRET_KEY
         onlyif: test ! -f var/env/DJANGO_SECRET_KEY
       venv_postactivate_hook:
-        run: cp -f etc/postactivate %venv%/bin/
+        run: ln -fs %proj%/scripts/export_env.sh %venv%/bin/postactivate
         onlyif: test ! -f %venv%/bin/postactivate
           
 

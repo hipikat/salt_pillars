@@ -3,6 +3,8 @@
 ####################################################
 
 {% from 'projects/hipikat_org.sls' import hipikat_org %}
+{% from 'projects/uwa_courses.sls' import uwa_courses %}
+
 
 # Template dict containing the project defaults, for reference and copy-forking
 {# set hipikat_defaults = { 
@@ -18,25 +20,39 @@
     'reload_watch': false,     # Run a process to restart the uWSGI job if changes are made
 } #}
 
+
 # Python 2 development deployment on the djcms3 branch
-{% set hipikat_py2_dev = { 
-    'name': 'hipi2-dev',
-    'git_rev': 'djcms3',
+{% set hipi23 = { 
+    'name': 'hipi23',
     'python_version': '2.7.6',
+    'git_rev': 'djcms3',
     'settings': 'Development',
-    'fqdn': 'py2.clowder.hpk.io',
+    'fqdn': 'hipi23.clowder.hpk.io',
     'http_basic_auth': true,
     'wsgi_enabled': false,
+    'site_enabled': false,
 } %}
 
 # Python 3 development deployment on the djcms3 branch
-{% set hipikat_py3_dev = { 
-    'name': 'hipi3-dev',
+{% set hipi33 = { 
+    'name': 'hipi33',
     'git_rev': 'djcms3',
+    'python_version': '3.3.5',
     'settings': 'Development',
-    'fqdn': 'py3.clowder.hpk.io',
+    'fqdn': 'hipi33.clowder.hpk.io',
     'http_basic_auth': true,
     'wsgi_enabled': false,
+    'site_enabled': false,
+} %}
+
+
+# Development install for experimental Future Students site
+{% set uwa_courses_dev = { 
+    'settings': 'Development',
+    'fqdn': 'uwa-courses.hpk.io',
+    'http_basic_auth': true,
+    'wsgi_enabled': false,
+    'site_enabled': false,
 } %}
 
 # Have Chippery configure the full web stacks for projects
@@ -45,8 +61,9 @@ chippery:
 
   # Lay out the WSGI projects defined above
   wsgi_projects:
-    {{ hipikat_org(**hipikat_py2_dev)|indent(4) }}
-    {# hipikat_org(**hipikat_py3_dev)|indent(4) #}
+    {{ hipikat_org(**hipi23)|indent(4) }}
+    {# hipikat_org(**hipi33)|indent(4) #}
+    {# uwa_courses(**uwa_courses_dev)|indent(4) #}
 
   # Base Virtualenv and project paths
   #virtualenv_path: /opt/venv

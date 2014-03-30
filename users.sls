@@ -5,8 +5,13 @@
 {% from 'secrets.sls' import htpasswd %}
 
 users:
+  weboffice:
+    fullname: University Website Office
+    sudouser: False
+
   hipikat:
     fullname: Adam Wright
+    email: adam@hipikat.org
     sudouser: True
     sudo_rules:
       - 'ALL=(ALL) NOPASSWD: ALL'
