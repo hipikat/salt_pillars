@@ -125,7 +125,7 @@
             {% if ( kwargs.get('autoindex') is not none and kwargs['autoindex'] ) or (
                settings in ('Debug', 'Development') ) %}
             directives:
-              - autoindex on;
+              - autoindex on
             {% endif %}
           {% endfor %}
       blog.{{ fqdn }}:

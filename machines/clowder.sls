@@ -4,6 +4,7 @@
 
 {% from 'projects/hipikat_org.sls' import hipikat_org %}
 {% from 'projects/uwa_courses.sls' import uwa_courses %}
+{% from 'projects/studyat_uwa.sls' import studyat_uwa %}
 
 
 # Template dict containing the project defaults, for reference and copy-forking
@@ -49,11 +50,21 @@
 # Development install for experimental Future Students site
 {% set uwa_courses_dev = { 
     'settings': 'Development',
-    'fqdn': 'uwa-courses.hpk.io',
+    'fqdn': 'uwa-courseinfo.hpk.io',
     'http_basic_auth': true,
     'wsgi_enabled': false,
     'site_enabled': false,
 } %}
+
+# Development install for experimental Future Students site
+{% set studyat_uwa_dev = { 
+    'settings': 'Development',
+    'fqdn': 'studyat-uwa.hpk.io',
+    'http_basic_auth': true,
+    'wsgi_enabled': false,
+    'site_enabled': false,
+} %}
+
 
 # Have Chippery configure the full web stacks for projects
 chippery:
@@ -64,6 +75,7 @@ chippery:
     {{ hipikat_org(**hipi23)|indent(4) }}
     {# hipikat_org(**hipi33)|indent(4) #}
     {# uwa_courses(**uwa_courses_dev)|indent(4) #}
+    {{ studyat_uwa(**studyat_uwa_dev)|indent(4) }}
 
   # Base Virtualenv and project paths
   #virtualenv_path: /opt/venv
