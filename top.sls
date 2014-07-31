@@ -3,16 +3,16 @@
 ####################################################
 
 base:
-  # All minions get...
-  '*':
-    - users             # System administrator user accounts
-    - miner             # Basic Salt Mine setup
-    - sys_packages      # Useful system, system-Python, etc. packages
+  # My 'peak' master. Utility box, IRC proxy, and deployer of other masters.
+  'mr-bones':
+    - machines.mrbones
+    - groups.hipikat
 
-  # Top-level Salt masters
-  'mr-*':
-    - saltlick.master
- 
   # Syndicated master for testing and development
   'clowder':
     - machines.clowder
+    - groups.hipikat
+
+  # PriceTrack dev box
+  'cockerel':
+    - machines.cockerel
