@@ -3,7 +3,6 @@
 ##########################################
 
 {% macro user_hipikat() %}
-
 hipikat:
 
   # Used by the users formula
