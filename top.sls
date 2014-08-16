@@ -7,7 +7,10 @@ base:
   'mr-bones':
     - groups.hipikat
     - machines.emperor
+
+    # Import map/fullstack
     - maps.fullstack
+    # Import map/frontend and map/layer4backend
     - maps.splitends
 
   # Syndicated master for testing and development

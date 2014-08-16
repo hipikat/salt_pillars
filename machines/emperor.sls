@@ -30,29 +30,64 @@ chippery:
   settings:
     # Set the default UMASK for users in /etc/login.defs
     default_umask: '002'
-    virtualenv_path: /opt/.virtualenvs
+    # Base directory for projects described in chippery.projects
     project_path: /opt
-    # The group to be set on project files
+    # The group to be set, by default, across project files
     project_group: hipikat
+    # Base directory for Python virtual environments
+    virtualenv_path: /opt/.virtualenvs
 
 
   # Set up salt-syndic machines based on maps defined in the pillar
-  syndicate:
-    # Create gabby-front 
+  syndicates:
+    # Front-end proxy/cache server in Singapore 
     gabby: map/frontend
 
-    # Create pups-web1, pups-web2, pups-db
-    pups: map/layer4backend
+    # Main production map
+    # Create (pups|dogs)-web(1|2) and (pups|dogs)-db
+    dog: map/layer4backend
 
+    # High-scale production map
     # Create dogs-web[1-6], dogs-db, with overrides
-    #dogs:
-    #  map: map/layer4backend
-    #  vm.db.profile: droplet2G
-    #  vm.web.profile: droplet1G
-    #  vm.web.count: 6
+    wolf:
+      map: map/layer4backend
+      vm.db.profile: droplet2G
+      vm.web.profile: droplet1G
+      vm.web.count: 6
 
-    # Create dev-fullstack
-    dev: map/fullstack
+    # Staging setup
+    pup:
+      map: map/layer4backend
+
+    # Create hipi-dev-fullstack
+    hipi-dev:
+      map: map/fullstack
+      stacks: wsgi_dev
+
+    # US production mirror
+    yankee: map/frontend
+    mule: map/layer4backend
+
+  # If 'formations' isn't defined, all syndicates are created under a
+  # single formation named 'formation'. Otherwise, only create syndicate
+  # groups that appear in a formation.
+  formations:
+    # Full-scale production, staging and suddenly-very-horizontally-scaled
+    # deployments in Singapore
+    sng_production: 
+      - gabby
+      - dog
+      - wolf: absent
+    sng_staging:
+      - gabby
+      - pup: manual
+    # Full-scale production mirror in the US
+    us_production:
+      - yankee: manual
+      - mule: manual
+    # Full-stack, single-box dev machine in Singapore
+    dev_box:
+      - dev: manual
 
     #varnish:
     #  # One of running, disabled or manual. (Default: running)
@@ -70,8 +105,8 @@ chippery:
     #  reload: True
 
   # Set the minion up as a WSGI development environment
-  stacks:
-    - wsgi_dev
+  #stacks:
+  #  - wsgi_dev
 
   projects:
     # Kenneth Reitz's request and response service
@@ -88,42 +123,35 @@ chippery:
                 pass_upstream: true
 
     # Adam Wright's personal home-site
+    hipikat_prod:
+      {{ hipikat_org() }}
+      destinations:
+        - sng_production
+        - us_production
+
+    hipikat_staging:
+      {{ hipikat_org({
+          'fqdn': 'hipikat-staging.hpk.io',
+      }) }}
+      destinations:
+        - sng_staging
+
     hipikat_dev:
       {{ hipikat_org({
-          'fqdn': 'home-dev.hpk.io',
-          'cloud': {
-              '_self': [
-                'roles': [
-                  'varnish',
-                  'nginx',
-                  'postgres',
-                  'app',
-                ]
-              ] 
-           }
-        }
+          'fqdn': 'hipi-dev-fullstack.hpk.io',
+          'source/rev': 'dev',
+          'settings': 'Development',
+          'http_basic_auth': True,
+          'auto-reload': True,
       }) }}
-
-    hipikat_prod:
-      {{ hipikat_org({
-          'fqdn': 'home-dev.hpk.io',
-      }) }}
-      local: False
-      cloud_prefix:
-      cloud:
-        _self:
-          roles:
-            - varnish
-        web:
-          count: 2
-          roles:
-            - nginx
-            - app_server
-        db: 
-          roles:
-            - database
+      destinations:
+        - dev_box
 
 
 # Act as a DynDNS-like master-server (or something?!)
 #domydns:
-#  base_fqdn: hpk.io
+#dnsprit:
+syndee:
+  nameserver: digital_ocean
+  base_fqdn: hpk.io
+

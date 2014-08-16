@@ -46,6 +46,9 @@
     DJANGO_SETTINGS_MODULE: hipikat.settings
     DJANGO_SETTINGS_CLASS: {{ settings }}
     DJANGO_ROOT_FQDN: {{ fqdn }}
+    {% if kwargs.get('auto-reload', False) %}
+    AUTO-RELOAD: True
+    {% endif %}
 
   post_install:
     make_secret_key:
