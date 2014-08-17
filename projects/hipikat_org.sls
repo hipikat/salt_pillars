@@ -3,6 +3,12 @@
 ####################################################
 
 
+{% set rewrites = {
+  '^/fa/?$': 'http://www.furaffinity.net/user/hipikat/',
+  '^/g\+/?$': 'https://plus.google.com/u/0/+AdamWright-Hipikat',
+} %}
+
+
 {% macro hipikat_org() %}
   {% set fqdn = kwargs.get('fqdn', 'hipikat.org') %}
   {% set settings = kwargs.get('settings', 'Production') %}
@@ -10,7 +16,7 @@
   source:
     url: https://github.com/hipikat/hipikat.org.git
     rev: {{ kwargs.get('source_rev', 'master') }}
-  python_version: {{ kwargs.get('python_version, '3.4.1' }}
+  python_version: {{ kwargs.get('python_version', '3.4.1') }}
   python_paths:
     - src
 
@@ -39,9 +45,9 @@
 
   # Server
   wsgi_module: hipikat.wsgi
-  port: {{ kwargs.get('port', 80') }}
+  port: {{ kwargs.get('port', '80') }}
+  env_dir: var/env
   env:
-    _dir: var/env
     DJANGO_DATABASE_URL: TODO
     DJANGO_SETTINGS_MODULE: hipikat.settings
     DJANGO_SETTINGS_CLASS: {{ settings }}
@@ -74,7 +80,9 @@
         '/':
           pass_upstream: true
           directives:
-            {{ hipikat_rewrites()|indent(14) }}
+            {% for rewrite_path, rewrite_dest in rewrites.items() %}
+            - rewrite "{{ rewrite_path }}" {{ rewrite_dest }} permanent
+            {% endfor %}
         # Serve /static and /media files from var/[static|media]
         {% for file_dir in ('/media', '/static') %}
         {{ file_dir }}:
@@ -89,21 +97,5 @@
       locations:
         '/':
           pass_upstream: true
- 
-  {% set cloud = kwargs.get('cloud', {}) %} 
-  {% if kwargs.get('cloud')
-  cloud:
-    _self:
-      roles:
-        - varnish
-    web:
-      count: 2
-      roles:
-        - nginx
-        - app_server
-    db:
-      roles:
-        - database
-
 
 {% endmacro %}

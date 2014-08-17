@@ -1,6 +1,7 @@
 #
 # Machine-specific pillars for my highest-level master
 
+{% from 'projects/hipikat_org.sls' import hipikat_org %}
 {% from 'secrets.sls' import digitalocean_key %}
 
 
@@ -87,26 +88,7 @@ chippery:
       - mule: manual
     # Full-stack, single-box dev machine in Singapore
     dev_box:
-      - dev: manual
-
-    #varnish:
-    #  # One of running, disabled or manual. (Default: running)
-    #  status: running
-
-    # Nginx will listen on port 80 if Varnish is disabled, or 8080 if
-    # Varnish is running or being managed manually.
-    #nginx:
-    #  # Set managed to True (default) to have Chippery control nginx.conf
-    #  managed: True
-    #  # One of running, disabled or manual. Default: running
-    #  status: running
-    #  # Set reload to True to reload configuration instead of restarting,
-    #  # when triggered by configuration changes. (Default: False)
-    #  reload: True
-
-  # Set the minion up as a WSGI development environment
-  #stacks:
-  #  - wsgi_dev
+      - dev
 
   projects:
     # Kenneth Reitz's request and response service
@@ -124,33 +106,31 @@ chippery:
 
     # Adam Wright's personal home-site
     hipikat_prod:
-      {{ hipikat_org() }}
+      {{ hipikat_org()|indent(4) }}
       destinations:
         - sng_production
         - us_production
-
+ 
     hipikat_staging:
-      {{ hipikat_org({
+      {{ hipikat_org(**{
           'fqdn': 'hipikat-staging.hpk.io',
-      }) }}
+      })|indent(4) }}
       destinations:
         - sng_staging
 
     hipikat_dev:
-      {{ hipikat_org({
+      {{ hipikat_org(**{
           'fqdn': 'hipi-dev-fullstack.hpk.io',
           'source/rev': 'dev',
           'settings': 'Development',
           'http_basic_auth': True,
           'auto-reload': True,
-      }) }}
+      })|indent(4) }}
       destinations:
         - dev_box
-
+ 
 
 # Act as a DynDNS-like master-server (or something?!)
-#domydns:
-#dnsprit:
 syndee:
   nameserver: digital_ocean
   base_fqdn: hpk.io
