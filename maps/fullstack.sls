@@ -8,3 +8,12 @@ map/fullstack:
         - nginx
         - app
         - postgres
+
+map/fullback:
+  back:
+    profile: droplet512M
+    grains:
+      chippery/roles:
+        - nginx
+        - app
+        - postgres

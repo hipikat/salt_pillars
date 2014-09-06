@@ -14,6 +14,7 @@ hipikat:
   groups:
     - root
     - www-data
+    - weboffice
   shell: /bin/bash
   ssh_auth:
     - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDKyCuPu+CjJ8z/Xiy8p57JxtbHwCvZe/KPKjkoLauObR9S{# -#}

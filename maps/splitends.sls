@@ -4,7 +4,8 @@ map/frontend:
     profile: droplet512M
     grains:
       chippery/roles:
-        - vagrant
+        - varnish
+
 
 map/layer4backend:
   web:

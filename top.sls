@@ -8,10 +8,14 @@ base:
     - groups.hipikat
     - machines.emperor
 
-    # Import map/fullstack
-    - maps.fullstack
-    # Import map/frontend and map/layer4backend
-    - maps.splitends
+    ## Import map/fullstack
+    #- maps.fullstack
+    ## Import map/frontend and map/layer4backend
+    #- maps.splitends
+
+  'cory':
+    - groups.weboffice
+    - machines.cory
 
   # Syndicated master for testing and development
   #'clowder':

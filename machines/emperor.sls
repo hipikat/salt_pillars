@@ -11,13 +11,66 @@ saltlick:
   salt_roots: https://github.com/hipikat/salt-roots.git
   salt_pillars: https://github.com/hipikat/salt-pillars.git
   salt_formulas:
+    chippery: https://github.com/hipikat/chippery-formula.git
+    git-server: https://github.com/hipikat/gitserver-formula.git
+    homeboy: https://github.com/hipikat/homeboy-formula.git
     users: https://github.com/saltstack-formulas/users-formula.git
     saltlick: https://github.com/hipikat/saltlick-formula.git
-    chippery: https://github.com/hipikat/chippery-formula.git
   salt_cloud:
     master_address: salt-master.hpk.io
     client_key: {{ digitalocean_key('client') }}
     api_key: {{ digitalocean_key('api') }}
+
+
+system_packages:
+  - zangband
+
+
+# Simple, shared, ssh-based git server via formula
+git-server:
+  authorized_users:
+    - hipikat
+
+
+# Act as a DynDNS-like master-server (or something?!)
+# (not programmed yet)
+#syndee:
+#  nameserver: digital_ocean
+#  base_fqdn: hpk.io
+#  secret_password: {# pillar['secrets:syndee_password'] #}
+
+
+# Cloud orchestration
+shoaler:
+  settings:
+    autoscale:
+      upsize_cpu_threshold: 60
+      upsize_cpu_wait: 15
+      downsize_cpu_threshold: 20
+      downsize_cpu_wait: 120
+
+  deployments:
+    sng-home-prod:
+      formation: scaling_apps
+      status: deployed
+
+    us-home-prod:
+      formation: scaling_apps
+      extend:
+        front:profile: droplet512M-ny2
+        web:profile: droplet512M-ny2
+        db:profile: droplet512M-ny2
+        db:grains:chippery/roles:
+          - db-replica
+      status: disabled
+
+    sng-staging:
+      formation: scaling_apps
+      status: disabled
+
+    dev:
+      formation: full_stack
+      status: disabled
 
 
 # Use Chippery to manage and configure projects across syndicated machines
@@ -38,57 +91,8 @@ chippery:
     # Base directory for Python virtual environments
     virtualenv_path: /opt/.virtualenvs
 
-
-  # Set up salt-syndic machines based on maps defined in the pillar
-  syndicates:
-    # Front-end proxy/cache server in Singapore 
-    gabby: map/frontend
-
-    # Main production map
-    # Create (pups|dogs)-web(1|2) and (pups|dogs)-db
-    dog: map/layer4backend
-
-    # High-scale production map
-    # Create dogs-web[1-6], dogs-db, with overrides
-    wolf:
-      map: map/layer4backend
-      vm.db.profile: droplet2G
-      vm.web.profile: droplet1G
-      vm.web.count: 6
-
-    # Staging setup
-    pup:
-      map: map/layer4backend
-
-    # Create hipi-dev-fullstack
-    hipi-dev:
-      map: map/fullstack
-      stacks: wsgi_dev
-
-    # US production mirror
-    yankee: map/frontend
-    mule: map/layer4backend
-
-  # If 'formations' isn't defined, all syndicates are created under a
-  # single formation named 'formation'. Otherwise, only create syndicate
-  # groups that appear in a formation.
-  formations:
-    # Full-scale production, staging and suddenly-very-horizontally-scaled
-    # deployments in Singapore
-    sng_production: 
-      - gabby
-      - dog
-      - wolf: absent
-    sng_staging:
-      - gabby
-      - pup: manual
-    # Full-scale production mirror in the US
-    us_production:
-      - yankee: manual
-      - mule: manual
-    # Full-stack, single-box dev machine in Singapore
-    dev_box:
-      - dev
+  stacks:
+    - wsgi_dev
 
   projects:
     # Kenneth Reitz's request and response service
@@ -107,31 +111,25 @@ chippery:
     # Adam Wright's personal home-site
     hipikat_prod:
       {{ hipikat_org()|indent(4) }}
-      destinations:
-        - sng_production
-        - us_production
+      #destinations:
+      #  - sng_production
+      #  - us_production
  
     hipikat_staging:
       {{ hipikat_org(**{
-          'fqdn': 'hipikat-staging.hpk.io',
+          'fqdn': 'hipi-staging.hpk.io',
+          'rev': 'stage',
       })|indent(4) }}
-      destinations:
-        - sng_staging
+      #destinations:
+      #  - sng_staging
 
     hipikat_dev:
       {{ hipikat_org(**{
-          'fqdn': 'hipi-dev-fullstack.hpk.io',
-          'source/rev': 'dev',
+          'fqdn': 'hipi-dev.hpk.io',
+          'rev': 'develop',
           'settings': 'Development',
           'http_basic_auth': True,
           'auto-reload': True,
       })|indent(4) }}
-      destinations:
-        - dev_box
- 
-
-# Act as a DynDNS-like master-server (or something?!)
-syndee:
-  nameserver: digital_ocean
-  base_fqdn: hpk.io
-
+      #destinations:
+      #  - dev_box
