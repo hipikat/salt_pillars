@@ -6,11 +6,18 @@
 {% macro principal_dates() %}
   {% set fqdn = kwargs.get('fqdn', 'principal-dates.hpk.io') %}
 
+  id: UWA Principal Dates
   source:
-    url: git@github.com:hipikat/principal-dates.git
+
+    #url: git@github.com:hipikat/principal-dates.git
+    #deploy_key: salt://deploy_keys/github/principal_dates
+    #remote_name: github
+
+    url: git@hpk.io:uwa-dates.git
+    deploy_key: salt://deploy_keys/private/{{ kwargs['deploy_minion'] }}
+    remote_name: hpk
+
     rev: {{ kwargs.get('source_rev', 'master') }}
-    deploy_key: salt://deploy_keys/principal_dates
-    remote_name: github
 
   python_version: {{ kwargs.get('python_version', '2.6.6') }}
   #python_paths:

@@ -14,24 +14,29 @@
   {% set settings = kwargs.get('settings', 'Production') %}
 
   source:
-    url: https://github.com/hipikat/hipikat.org.git
-    rev: {{ kwargs.get('source_rev', 'master') }}
+    url: git@github.com:hipikat/hipikat.org.git
+    deploy_key: salt://deploy_keys/github/hipikat_org
+    remote_name: github
+    {% if kwargs.get('rev', 'master') is not none %}
+    rev: {{ kwargs.get('rev', 'master') }}
+    {% endif %}
+
   python_version: {{ kwargs.get('python_version', '3.4.1') }}
-  python_paths:
-    - src
+  #python_paths:
+  #  - src
 
   # Pip requirements file relative to source.url
-  python_requirements: etc/requirements.txt
+  #python_requirements: etc/requirements.txt
 
   # Python packages that require special system packages
-  python_system:
-    - pillow
+  #python_system:
+  #  - pillow
 
   # Python libraries installed from source
   python_libs:
     django-cms:
       url: https://github.com/divio/django-cms.git
-      rev: 3.0.3
+      rev: {{ kwargs.get('django-cms:rev', '3.0.5') }}
       editable: true
     envdir:
       url: https://github.com/hipikat/envdir.git
@@ -39,36 +44,36 @@
       editable: true
 
   # System and cloud services
-  services:
-    postgresql:
-      owner: hipikat
+  #services:
+  #  postgresql:
+  #    owner: hipikat
 
   # Server
   wsgi_module: hipikat.wsgi
   port: {{ kwargs.get('port', '80') }}
-  env_dir: var/env
-  env:
-    DJANGO_DATABASE_URL: TODO
-    DJANGO_SETTINGS_MODULE: hipikat.settings
-    DJANGO_SETTINGS_CLASS: {{ settings }}
-    DJANGO_ROOT_FQDN: {{ fqdn }}
-    {% if kwargs.get('auto-reload', False) %}
-    AUTO-RELOAD: True
-    {% endif %}
+  #env_dir: var/env
+  #env:
+  #  DJANGO_DATABASE_URL: TODO
+  #  DJANGO_SETTINGS_MODULE: hipikat.settings
+  #  DJANGO_SETTINGS_CLASS: {{ settings }}
+  #  DJANGO_ROOT_FQDN: {{ fqdn }}
+  #  {% if kwargs.get('auto-reload', False) %}
+  #  AUTO-RELOAD: True
+  #  {% endif %}
 
-  post_install:
-    make_secret_key:
-      # TODO: We need the same key on each app server
-      run: scripts/make_secret_key.py > var/env/DJANGO_SECRET_KEY
-      onlyif: test ! -f var/env/DJANGO_SECRET_KEY
-    venv_postactivate_hook:
-      run: ln -fs %proj%/scripts/export_env.sh %venv%/bin/postactivate
-      # TODO: This test should look at relative modification dates
-      onlyif: test ! -f %venv%/bin/postactivate
+  #post_install:
+  #  make_secret_key:
+  #    # TODO: We need the same key on each app server
+  #    run: scripts/make_secret_key.py > var/env/DJANGO_SECRET_KEY
+  #    onlyif: test ! -f var/env/DJANGO_SECRET_KEY
+  #  venv_postactivate_hook:
+  #    run: ln -fs %proj%/scripts/export_env.sh %venv%/bin/postactivate
+  #    # TODO: This test should look at relative modification dates
+  #    onlyif: test ! -f %venv%/bin/postactivate
 
   # Runtime switches
-  site_enabled: {{ kwargs.get('site_enabled', true) }}
-  wsgi_enabled: {{ kwargs.get('wsgi_enabled', true) }}
+  wsgi_state: {{ kwargs.get('wsgi_state', 'running') }}
+  site_state: {{ kwargs.get('site_state', 'enabled') }}
 
   # Web server configuration
   http_basic_auth: {{ kwargs.get('http_basic_auth', false) }}

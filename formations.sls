@@ -1,6 +1,11 @@
 
 shoaler:
   formations:
+
+    # A 'layer 2' formation with a self-scaling application layer:
+    # - One 'foo-front' box, running Varnish
+    # - 2 to 8 application servers 'foo-webN'
+    # - One 'foo-db' database backend
     scaling_apps:
       front: 
         profile: droplet512M

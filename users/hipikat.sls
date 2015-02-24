@@ -15,6 +15,7 @@ hipikat:
     - root
     - www-data
     - weboffice
+    - perthfurs
   shell: /bin/bash
   ssh_auth:
     - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDKyCuPu+CjJ8z/Xiy8p57JxtbHwCvZe/KPKjkoLauObR9S{# -#}
@@ -36,6 +37,5 @@ bBj6RYWBv3Od1yYsRHad zeno@trepp
     - fabric
     - flake8
     - httpie
-    - yolk
 
 {% endmacro %}

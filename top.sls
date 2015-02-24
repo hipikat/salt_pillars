@@ -3,25 +3,74 @@
 ####################################################
 
 base:
-  # My 'peak' master. Utility box, IRC proxy, and deployer of other masters.
-  'mr-bones':
+  # Monarchs are the highest-level masters
+  'hrm-*':
+    - profiles.monarch
     - groups.hipikat
-    - machines.emperor
 
-    ## Import map/fullstack
-    #- maps.fullstack
-    ## Import map/frontend and map/layer4backend
-    #- maps.splitends
+  #'hrm-kerry':
+  'mr-bones':
+    - settings.reigning_monarch
+  
+  # Syndicated masters
+  #'mx-*':
+  #  - profiles.syndic_master
 
+
+
+  ### Deprecated ........
+
+  # My 'peak' masters. Utility box, IRC proxy, and deployer of other masters.
+  'mr-*':
+    - profiles.emperor
+    - groups.hipikat
+    # Merge generic Shoaler formations into the pillar['shoaler'] dict
+    - formations
+
+  #'mr-(koala|bobtail)':
+  #  - match: pcre
+  'mr-koala':
+    - profiles.monarch
+    - saltlick.salt_dev
+
+  ####
+  # Development
+  ####
+
+  # Personal development box, open to anyone in my office.
   'cory':
-    - groups.weboffice
-    - machines.cory
+    - groups.perthfurs
+    - profiles.cory
 
-  # Syndicated master for testing and development
-  #'clowder':
-  #  - machines.clowder
+  ####
+  # Blueprints for snapshots
+  ####
+
+  # 'Dormant' boxes with everything I usually need already installed.
+  # Made to be turned into snapshots, which are in turn used to rapidly
+  # deploy and configure nodes in any cloud formation. Suffix is of the
+  # form '-512M', '-1G', '-2G', etc.
+  '*-stem-*':
+    - groups.hipikat
+
+  # More development tools
+  'dev-stem-*':
+    - profiles.dev-stem
+
+  # More security out-of-the-box
+  'prod-stem-*':
+    - profiles.prod-stem
+
+  ####
+  # Ongoing projects
+  ####
+
+  # Production web host formation: [us|sng]-home-prod-[front|webN|db]
+  # Created and scaled by Shoaler, projects managed by Chippery
+  #'*-home-prod-*':
   #  - groups.hipikat
+  #  - profiles.personal_web_prod
 
-  # PriceTrack dev box
-  #'cockerel':
-  #  - machines.cockerel
+  # Nedsaver.org campaign website
+  'nedsaver.org':
+    - groups.hipikat
