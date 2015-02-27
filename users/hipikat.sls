@@ -23,6 +23,11 @@ H1WLwbkgT8nOtYQskuIwcoHERp7GkSjCcI1qGYyILRYPIKmwC2mXyCFtb47PejAS8AhnT9XJ7luPuOL0
 XjwwBjU1Hr9ZDZMImcki4rUpPcjKhgvsHI/eALO0FcV/4BCYrBKTTl1S8V1nolMb+D4VCpr/a43akqARtr04QKZCQZq/{# -#}
 7/q8Dts8f4TaR/YxXEK2n4TZsWdnsxkmGyQwdS0i9qUlyxdXSGLYW9vn+aceOgaYA5RiU/CO2wVm7SCungHjCBgPOQhr{# -#}
 bBj6RYWBv3Od1yYsRHad zeno@trepp
+    - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDfu6SFcga+d/flw+/XGGzNIHo7+AKxv1bjg4fJVyUVNee8{# -#}
+C8dij2SeLWUFbHroCsIIhsRzstDPdSBIYKTaMC3TKMSEuSfC0QIuZR2jiIMzHWBVEJEFkEFPKofD/sjevwubiCmBI9Ro{# -#}
+7upAPKYDRO/tizB5qIV9FxBHOTwcGxQIQqsQJIjabgc6onTlLeCZuj7RtxYdslS+qVxkp4YKGYZFS+poQi7VIvlbf7N6{# -#}
+E6PvgRkwaiawZYGH6qXOhaV5edc3Gf1eAzi+rORAgWNIzoiA+u5OX9cz631TqZd9yeBNJdNe3k2FHYB4ZrQXfCeykllX{# -#}
+VCAGUkyJUh9Zx5H2XoAj hipikat@mimint
 
   # Used by the homeboy formula
   dotfiles:
