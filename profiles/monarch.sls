@@ -8,31 +8,52 @@
 {% from 'secrets.sls' import digitalocean_key %}
 
 
+settings:
+  # system.system_timezone
+  system_timezone: 'Australia/Perth'
+
+  # system.default_user_umask
+  default_user_umask: '002'
+
+  # Set by saltlick.supervisor, used by programs installing themselves in Supervisor
+  supervisor_conf_dir: /etc/supervisor/programs-enabled
+
+
+# Define which states are responsible for programs/namespaces
 controllers:
   supervisor: saltlick.supervisor
 
-settings:
-  supervisor_conf_dir: /etc/supervisor/programs-enabled
 
 include:
   # Install Salt in a Virtualenv at /opt/salt, let Supervisord manage it
   - saltlick.venv_salt_install
+
 
 # System and system-Python packages to install
 system_packages:
   - zangband:
       hold: True
 
-#system_python_packages:
-#  - yolk
-#  - virtualenvwrapper
+system_python_packages:
+  - pep8
+  - virtualenvwrapper
+  - yolk
+
+
+# Rsync anything that should exist on replicated servers and isn't already
+# replicated with states and pillars and version control. TODO: Implement...
+rsync_folders:
+  patterns:
+    - /home/*
+    - /var/games/zangband
+
 
 # Simple, shared, ssh-based git server via formula
 git-server:
   authorized_users:
     - hipikat
 
-# Use Saltlick to synchronise one Salt configuration across my masters
+# Use Saltlick to synchronise one Salt configuration across masters
 saltlick:
 
   # Group identifier for Salt and its components
@@ -46,8 +67,8 @@ saltlick:
     # SaltStack-blessed formulas
     users: https://github.com/saltstack-formulas/users-formula.git
 
-    # Hipikat's formulas on GitHub
-  {% for formula in ('chippery', 'git-server', 'homeboy', 'saltlick', 'shoaler') %}
+    # Hipikat's Salt formulas on GitHub
+  {% for formula in ('chippery', 'git-server', 'homeboy', 'saltlick', 'shoaler', 'system') %}
     {{ formula }}:
       url: git@github.com:hipikat/{{ formula }}-formula.git
       deploy_key: salt://deploy_keys/github/{{ formula }}-formula
@@ -144,8 +165,10 @@ chippery:
 
   # Global settings, applied to the minion and all syndicated machines
   settings:
+
     # Set the default UMASK for users in /etc/login.defs
-    default_umask: '002'
+    #default_umask: '002'
+
     # Base directory for projects described in chippery.projects
     project_path: /opt
     # The group to be set, by default, across project files
@@ -155,8 +178,8 @@ chippery:
     # Web server (Nginx) state. One of 'enabled' (default), 'disabled' or 'ignore'
     web_server: enabled
 
-  stacks:
-    - wsgi_dev
+  #stacks:
+  #  - wsgi_dev
 
   projects:
     # Kenneth Reitz's request and response service
