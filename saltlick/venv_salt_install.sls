@@ -8,5 +8,4 @@ saltlick:
     virtualenv_dir: /opt/salt
     source_dir: /opt/salt/salt
     config_dir: /etc/salt
-    rev: 2015.2
-
+    rev: 2014.7
