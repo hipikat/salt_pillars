@@ -5,7 +5,7 @@
 
 
 {% from 'projects/hipikat_org.sls' import hipikat_org %}
-{% from 'secrets.sls' import digitalocean_key %}
+{% from 'secrets/hipikats_eyes_only.sls' import digitalocean_key %}
 
 
 settings:
