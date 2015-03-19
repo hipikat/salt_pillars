@@ -9,13 +9,16 @@ base:
     - groups.hipikat
 
   #'hrm-kerry':
-  'mr-bones':
-    - settings.reigning_monarch
+  #'mr-bones':
+  #  - settings.reigning_monarch
   
   # Syndicated masters
   #'mx-*':
   #  - profiles.syndic_master
 
+
+  #'hrm-piggy':
+  #  - projects.uwaforward
 
 
   ### Deprecated ........
@@ -29,9 +32,9 @@ base:
 
   #'mr-(koala|bobtail)':
   #  - match: pcre
-  'mr-koala':
-    - profiles.monarch
-    - saltlick.salt_dev
+  #'mr-koala':
+  #  - profiles.monarch
+  #  - saltlick.salt_dev
 
   ####
   # Development

@@ -30,9 +30,10 @@ include:
 
 
 # System and system-Python packages to install
-system_packages:
-  - zangband:
-      hold: True
+# Note: pkg/hold appears broken in Salt 2014.7.2 - possibly issue 13293
+#system_packages:
+#  - zangband:
+#      hold: True
 
 system_python_packages:
   - pep8
@@ -47,11 +48,6 @@ rsync_folders:
     - /home/*
     - /var/games/zangband
 
-
-# Simple, shared, ssh-based git server via formula
-git-server:
-  authorized_users:
-    - hipikat
 
 # Use Saltlick to synchronise one Salt configuration across masters
 saltlick:
@@ -75,10 +71,17 @@ saltlick:
       remote_name: github
   {% endfor %}
 
-  salt_cloud:
-    master_address: monarch.hpk.io
-    client_key: {{ digitalocean_key('client') }}
-    api_key: {{ digitalocean_key('api') }}
+  #salt_cloud:
+  #  master_address: monarch.hpk.io
+  #  client_key: {{ digitalocean_key('client') }}
+  #  api_key: {{ digitalocean_key('api') }}
+
+
+
+# Simple, shared, ssh-based git server via formula
+git-server:
+  authorized_users:
+    - hipikat
 
 
 
