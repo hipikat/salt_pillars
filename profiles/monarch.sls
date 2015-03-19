@@ -52,11 +52,17 @@ rsync_folders:
 # Use Saltlick to synchronise one Salt configuration across masters
 saltlick:
 
+  give_keys:
+    - salt://deploy_keys/hipikat-github:qa
+
   # Group identifier for Salt and its components
   salt_group: hipikat
 
   # Salt roots and pillars
-  salt_roots: https://github.com/hipikat/salt-roots.git
+  salt_roots:
+    url: git@github.com:hipikat/salt-roots.git
+    deploy_key: /srv/salt/deploy_keys/hipikat-github
+
   salt_pillars: https://github.com/hipikat/salt-pillars.git
   salt_formulas:
 
