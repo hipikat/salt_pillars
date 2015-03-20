@@ -3,6 +3,11 @@
 ####################################################
 
 base:
+  'hog':
+    - profiles.monarch
+    - groups.hipikat
+
+
   # Monarchs are the highest-level masters
   'hrm-*':
     - profiles.monarch
