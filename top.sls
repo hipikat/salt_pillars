@@ -5,13 +5,13 @@
 base:
   'hog':
     - profiles.monarch
-    - groups.hipikat
+    - users.hipikat
 
 
   # Monarchs are the highest-level masters
   'hrm-*':
     - profiles.monarch
-    - groups.hipikat
+    - users.hipikat
 
   #'hrm-kerry':
   #'mr-bones':

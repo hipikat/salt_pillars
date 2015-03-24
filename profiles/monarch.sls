@@ -4,10 +4,31 @@
 # TODO: Make them dormant by default; require a reigning_monarch grain.
 
 
-{% from 'projects/hipikat_org.sls' import hipikat_org %}
-{% from 'secrets/hipikats_eyes_only.sls' import digitalocean_key %}
+include:
+  # Install Salt in a Virtualenv at /opt/salt, let Supervisord manage it
+  - saltlick.venv_salt_install
+  - saltlick.hipikat_flats
+
+  # Include deploy keys, cloud provider auth tokens, etc.
+  - secrets.hipikats_eyes_only
+
+  # Flesh-and-blood user accounts
+  - users.hipikat
 
 
+# Unix groups
+users:
+  hipikat:
+    sudouser: True
+    sudo_rules:
+      - 'ALL=(ALL) NOPASSWD: ALL'
+    groups:
+      - root
+      - www-data
+      - weboffice
+
+
+# Shared settings
 settings:
   # system.system_timezone
   system_timezone: 'Australia/Perth'
@@ -19,26 +40,21 @@ settings:
   supervisor_conf_dir: /etc/supervisor/programs-enabled
 
 
-# Define which states are responsible for programs/namespaces
+# Define states responsible for programs (etc.)
 controllers:
   supervisor: saltlick.supervisor
 
 
-include:
-  # Install Salt in a Virtualenv at /opt/salt, let Supervisord manage it
-  - saltlick.venv_salt_install
-
-
 # System and system-Python packages to install
-# Note: pkg/hold appears broken in Salt 2014.7.2 - possibly issue 13293
-#system_packages:
-#  - zangband:
-#      hold: True
-
 system_python_packages:
   - pep8
   - virtualenvwrapper
   - yolk
+
+# Note: pkg/hold appears broken in Salt 2014.7.2 - possibly issue 13293
+#system_packages:
+#  - zangband:
+#      hold: True
 
 
 # Rsync anything that should exist on replicated servers and isn't already
@@ -49,120 +65,18 @@ rsync_folders:
     - /var/games/zangband
 
 
-# Use Saltlick to synchronise one Salt configuration across masters
-saltlick:
-
-  give_keys:
-    - salt://deploy_keys/hipikat-github:qa
-
-  # Group identifier for Salt and its components
-  salt_group: hipikat
-
-  # Salt roots and pillars
-  salt_roots:
-    url: git@github.com:hipikat/salt-roots.git
-    deploy_key: /srv/salt/deploy_keys/hipikat-github
-
-  salt_pillars: https://github.com/hipikat/salt-pillars.git
-  salt_formulas:
-
-    # SaltStack-blessed formulas
-    users: https://github.com/saltstack-formulas/users-formula.git
-
-    # Hipikat's Salt formulas on GitHub
-  {% for formula in ('chippery', 'git-server', 'homeboy', 'saltlick', 'shoaler', 'system') %}
-    {{ formula }}:
-      url: git@github.com:hipikat/{{ formula }}-formula.git
-      deploy_key: salt://deploy_keys/github/{{ formula }}-formula
-      remote_name: github
-  {% endfor %}
-
-  #salt_cloud:
-  #  master_address: monarch.hpk.io
-  #  client_key: {{ digitalocean_key('client') }}
-  #  api_key: {{ digitalocean_key('api') }}
-
-
-
 # Simple, shared, ssh-based git server via formula
 git-server:
   authorized_users:
     - hipikat
 
 
-
-
 # Act as a DynDNS-like master-server (or something?!)
 # (not programmed yet)
-#syndee:
-#  nameserver: digital_ocean
-#  base_fqdn: hpk.io
-#  secret_password: {# pillar['secrets:syndee_password'] #}
-
-
-# Cloud orchestration
-shoaler:
-  settings:
-    autoscale:
-      upsize_cpu_threshold: 60
-      upsize_cpu_wait: 15
-      downsize_cpu_threshold: 20
-      downsize_cpu_wait: 120
-
-  deployments:
-
-    # Front-end proxy-cache/load-balancers for two or more sites
-    hipikat-front:
-      profile: droplet512M
-      grains:
-        chippery/roles:
-          - varnish
-          - redis
-
-    private-front:
-      profile: droplet512M
-      grains:
-        chippery/roles:
-          - varnish
-          - redis
-
-    # Scaling, stateless layer of apps, for all servers
-    apps-prod:
-      status: disabled        # disabled
-      profile: droplet512M
-      autoscale_min: 2
-      autoscale_max: 8
-      grains:
-        chippery/roles:
-          - nginx
-          - apps
-          - static
-          - media
-
-    apps-stage:
-      profile: droplet512M
-      count: 2
-      grains:
-        chippery/roles:
-          - nginx
-          - apps
-          - static
-          - media
-   
-    # One minion just hosting databases for all sites
-    databases-prod:
-      status: disabled        # disabled
-      profile: droplet1G
-      grains:
-        chippery/roles:
-          - databases
-
-    databases-stage:
-      profile: droplet512M
-      grains:
-        chippery/roles:
-          - databases
-
+syndee:
+  nameserver: digital_ocean
+  base_fqdn: hpk.io
+  #secret_password: {# pillar['secrets:syndee_password'] #}
 
 
 # Use Chippery to manage and configure projects across syndicated machines
@@ -207,30 +121,3 @@ chippery:
       #wsgi_state: running
       # Nginx site configuration - 'enabled'/True (default), 'disabled'/False or 'ignore'
       #site_state: enabled
-
-
-    # Adam Wright's personal home-site
-    #hipikat_prod:
-    #  {# hipikat_org()|indent(4) #}
-    #  destinations:
-    #    - sng_production
-    #    - us_production
- 
-    #hipikat_staging:
-    #  {# hipikat_org(**{
-    #      'fqdn': 'hipi-staging.hpk.io',
-    #      'rev': 'stage',
-    #  })|indent(4) #}
-    #  #destinations:
-    #  #  - sng_staging
-
-    #hipikat_dev:
-    #  {# hipikat_org(**{
-    #      'fqdn': 'hipi-dev.hpk.io',
-    #      'rev': 'develop',
-    #      'settings': 'Development',
-    #      'http_basic_auth': True,
-    #      'auto-reload': True,
-    #  })|indent(4) #}
-    #  #destinations:
-    #  #  - dev_box
