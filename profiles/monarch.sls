@@ -1,19 +1,21 @@
 #
-# Highest level master.
-#
-# TODO: Make them dormant by default; require a reigning_monarch grain.
+# Highest-level master profile
 
 
 include:
-  # Install Salt in a Virtualenv at /opt/salt, let Supervisord manage it
-  - saltlick.venv_salt_install
+  # Include base system profile
+  - profiles.base
+
+  # Install roots, pillars & formulas common to Adam Wright's masters
   - saltlick.hipikat_flats
 
   # Include deploy keys, cloud provider auth tokens, etc.
   - secrets.hipikats_eyes_only
 
-  # Flesh-and-blood user accounts
-  - users.hipikat
+  # Salt-cloud provider and profile settings
+  - saltlick.hipikat_clouds
+
+
 
 
 # Unix groups
@@ -24,35 +26,15 @@ users:
       - 'ALL=(ALL) NOPASSWD: ALL'
     groups:
       - root
-      - www-data
-      - weboffice
-
-
-# Shared settings
-settings:
-  # system.system_timezone
-  system_timezone: 'Australia/Perth'
-
-  # system.default_user_umask
-  default_user_umask: '002'
-
-  # Set by saltlick.supervisor, used by programs installing themselves in Supervisor
-  supervisor_conf_dir: /etc/supervisor/programs-enabled
-
-
-# Define states responsible for programs (etc.)
-controllers:
-  supervisor: saltlick.supervisor
 
 
 # System and system-Python packages to install
 system_python_packages:
-  - pep8
   - virtualenvwrapper
-  - yolk
 
-# Note: pkg/hold appears broken in Salt 2014.7.2 - possibly issue 13293
-#system_packages:
+system_packages:
+  - irssi
+#    # Note: pkg/hold appears broken in Salt 2014.7.2 - possibly issue 13293
 #  - zangband:
 #      hold: True
 

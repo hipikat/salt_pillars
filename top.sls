@@ -3,15 +3,32 @@
 ####################################################
 
 base:
-  'hog':
-    - profiles.monarch
+
+  # This pillar repository is by/for Adam Wright, so...
+  '*':
     - users.hipikat
 
-
-  # Monarchs are the highest-level masters
+  # Monarchs are my highest-level masters
   'hrm-*':
+    - match: pcre
     - profiles.monarch
-    - users.hipikat
+
+  # Standard profiles
+  'profile:development':
+    - match: grain
+    - profiles.development
+
+  #'thistle|turtle':
+  'cherrybarb':
+    - match: pcre
+    - profiles.development
+
+  #'profile:production_web':
+  #  - match: grain
+  #  - profiles.production_web
+
+
+
 
   #'hrm-kerry':
   #'mr-bones':

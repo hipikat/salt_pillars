@@ -15,7 +15,6 @@ saltlick:
     deploy_key: hipikat-github
 
   salt_formulas:
-
     # SaltStack-blessed formulas
     users: https://github.com/saltstack-formulas/users-formula.git
 

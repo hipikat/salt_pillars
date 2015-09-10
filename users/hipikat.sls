@@ -30,12 +30,23 @@ users:
     dotfiles:
       url: https://github.com/hipikat/dotfiles.git
       install_cmd: 'python plumb_files.py --current-user --force'
+      deploy_key: /etc/saltlick/deploy_keys/hipikat-github
+
+    #crontabs:
+    #  - '@reboot USER=hipikat SHELL=/bin/bash HOME=/home/hipikat PWD=/home/hipikat sleep 5 && cd /home/hipikat && /home/hipikat/.bin/screen-launch irc-etc'
+
     uses_system_packages:
+      - curl
       - exuberant-ctags
       - git
       - mosh
       - screen
+      - tree
+      - vim
+      - jq
     uses_python_packages:
-      - fabric
+     #- fabric
       - flake8
-      - httpie
+     #- httpie
+      - pep8
+     #- yolk
