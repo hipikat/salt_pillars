@@ -5,9 +5,12 @@
 
 include:
   # Include deploy keys, cloud provider auth tokens, etc.
-  - secrets.hipikats_eyes_only
+  - secrets
 
 swapfile: 2G
+
+system_packages:
+  irssi: True
 
 saltlick:
   # Salt roots and pillars
@@ -36,7 +39,7 @@ saltlick:
     # in /etc/salt/cloud.providers.d/saltlick.conf
     #
     # The 'digitalocean-secrets' profile they extend is defined in 
-    # pillar/secrets/hipikats_eyes_only.sls and it looks like:
+    # [pillar_roots]/secrets.sls and it looks like:
     #
     # saltlick:
     #   salt_cloud:

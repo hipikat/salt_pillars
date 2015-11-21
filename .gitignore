@@ -1,2 +1,2 @@
-secrets.sls
-secrets/*
+secret*
+!secrets.sls.example
