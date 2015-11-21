@@ -2,11 +2,6 @@
 # Generic development box profile
 
 
-include:
-  # Include base system profile
-  - profiles.base
-
-
 #controllers:
 #  pyenv: chippery.pyenv
 

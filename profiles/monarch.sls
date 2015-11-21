@@ -3,9 +3,6 @@
 
 
 include:
-  # Include base system profile
-  - profiles.base
-
   # Install roots, pillars & formulas common to Adam Wright's masters
   - saltlick.hipikat_flats
 

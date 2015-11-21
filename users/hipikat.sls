@@ -1,6 +1,6 @@
 #
-# System administrators.
-##########################################
+# User pillar for Adam 'hipikat' Wright
+########################################
 
 users:
   hipikat:
@@ -9,6 +9,9 @@ users:
     fullname: Adam Wright
     email: adam@hipikat.org
     shell: /bin/bash
+    sudouser: True
+    sudo_rules:
+      - 'ALL=(ALL) NOPASSWD: ALL'
     ssh_auth:
       - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDKyCuPu+CjJ8z/Xiy8p57JxtbHwCvZe/KPKjkoLauObR9S{# -#}
   H1WLwbkgT8nOtYQskuIwcoHERp7GkSjCcI1qGYyILRYPIKmwC2mXyCFtb47PejAS8AhnT9XJ7luPuOL0En7X3las3LfZ{# -#}
