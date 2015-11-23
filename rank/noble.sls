@@ -33,31 +33,8 @@ saltlick:
       deploy_key: saltlick:deploy_keys:hipikat-github
   {% endfor %}
 
+  # See secrets.sls.example to find the missing pieces.
   salt_cloud:
-
-    # Cloud providers defined here get written to noble boxes,
-    # in /etc/salt/cloud.providers.d/saltlick.conf
-    #
-    # The 'digitalocean-secrets' profile they extend is defined in 
-    # [pillar_roots]/secrets.sls and it looks like:
-    #
-    # saltlick:
-    #   salt_cloud:
-    #     providers:
-    #
-    #       # Digital Ocean
-    #       digitalocean-secrets:
-    #         provider: digital_ocean
-    #         ssh_key_names: hipikat-digitalocean,trepp-rsa,hipikat@bellus,hipikat@mimint
-    #
-    #         # See https://cloud.digitalocean.com/settings/applications#access-tokens
-    #         personal_access_token: [64 character hexadecimal string]
-    # 
-    #         # Taken from saltlick:deploy_keys:hipikat-digitalocean:(public|private)
-    #         # and written to /etc/saltlick/deploy_keys/hipikat-digitalocean[.pub]
-    #         # - this becomes 'ssh_key_file' in Salt Cloud provider configurations.
-    #         deploy_key: hipikat-digitalocean
-
     providers:
       digitalocean-sgp1:
         - extends: digitalocean-secrets:digital_ocean
@@ -88,7 +65,7 @@ saltlick:
           profile: development
 
       # For machines running outside my Digital Ocean private network
-      salt_ext:
+      external:
         extends: default
         minion:
           master: salt.hpk.io
