@@ -1,0 +1,13 @@
+#
+# 
+########################################################################
+
+
+{% from "settings.jinja" import settings, meta %}
+
+# 'es' is shorthand for 'empire_settings'
+{% set es = settings.get('empire', {}) %}
+{% set empire = {
+  'name': es['name'],
+  'sovereign': 
+} %}
