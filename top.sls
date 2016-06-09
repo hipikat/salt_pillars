@@ -17,23 +17,41 @@
 # specified between the letter and '@' character.
 
 
-base:
-  # Default constants, throughout the cluster
-  '*':
-    - ubiquitous
+{% set settings = {} %}
 
-  # I live in Perth and primarily use Digital Ocean droplets in
-  # the Singapore farm, which is in my timezone, so...
-  'not P@timezone:':
+base:
+  # Configure the node as a 'sovereign', 'prefect', 'noble' or 'peasant'
+  # - see pillar/rank/README.txt for more information.
+  {% set empire = settings.get('empire', {}) %}
+  {% set nobles = [] %}
+  {% for rank in ['sovereign', 'prefect'] %}
+    {% if rank in empire %}
+      {% set ruler = empire.get(rank) %}
+
+  '{{ ruler["name"] }}':
+    - rank.{{ rank }}
+
+    {% endif %}
+  {% endfor %}
+
+  # Older boxes, not managed by the Salt formula
+  'not L@kerry':
+    - match: compound
+    - salt
+
+  # Cluster defaults
+  '*':
+    - empire
+    - ubiquitous
+    - users
+    - firewall
+    - mine
+
+    # TODO: Delete me! (Just for development)
+    #- scratch
+
+  # Default timezone to Perth unless a 'timezone' grain is set
+  'not P@timezone':
     - match: compound
     - tz-perth-au
-
-  # All nobles are equal
-  'P@cluster_rank:sovereign or P@cluster_rank:noble':
-    - match: compound
-    - rank.noble
-
-  # The sovereign has all 'main controller' parts enabled
-  'P@cluster_rank:sovereign':
-    - match: compound
-    - rank.sovereign
+    - irc

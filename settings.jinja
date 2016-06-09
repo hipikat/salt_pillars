@@ -1,0 +1,87 @@
+#
+# Cluster-specific settings, used by other pillars
+########################################################################
+
+
+# Define basic settings for the cluster here
+#
+# NB: This is not how the settings dictionary will look by the time this
+# file has finished processing - some dictionary keys are expanded to
+# include more detail, e.g. {'sovereign': 'sovereign_id'} becomes
+# {'sovereign': {'name': 'sovereign_id', 'private_cidr': '...'} ...
+{% set settings = {
+  'empire': {
+    'name': 'dev',
+    'tld': 'hpk.io',
+    'sovereign': 'tinymare',
+    'prefect': 'kerry'
+  },
+
+  'mine_interval': '10',
+
+  'public_interface': 'eth0',
+  'private_interface': 'eth1',
+
+} %}
+
+
+# Inspect and expand on important details about machines
+{% set run = salt['saltutil.runner'] %}
+{% set empire = settings.get('empire', {}) %}
+
+{% if 'sovereign' in empire %}
+  {% set sovereign_name = empire['sovereign'] %}
+  {% set sovereign_private_nets = run('mine.get', tgt=sovereign_name,
+                                      fun='private_subnets') %}
+  {% do settings.update({
+    'sovereign': {
+      'name': sovereign_name,
+      'private_subnets': sovereign_private_subnets
+    }
+  }) %}
+{% endif %}
+
+{% if 'prefect' in empire %}
+  {% set prefect_name = empire['prefect'] %}
+  {% set prefect_private_ips = run('mine.get', tgt=prefect_name,
+                                   fun='private_ips') %}
+  {% do settings.update({
+    'prefect': {
+      'name': prefect_name,
+    'private_ips': prefect_private_ips
+    }
+  }) %}
+{% endif %}
+
+
+{% do settings.update({
+  'self': {
+    'name': grains['id'],
+    'private_subnets': run('mine.get', tgt=grains['id'],
+                           fun='private_subnets')
+  }
+}) %}
+
+
+
+# Set a convenience settings.self dictionary
+
+{% for rank in ['sovereign', 'prefect'] %}
+
+{% do settings.update({
+  'self': {
+    'name': me,
+
+    {% for rank in ['sovereign', 'prefect'] %}
+      {% if settings.get(rank, None) == me %}
+        'rank': rank
+      {% endif %}
+    {% else %}
+      {% if me in settings.get('nobles', []) %}
+        'rank': 'noble'
+      {% endif %}
+      {% else %}
+        'rank': 'peasant'
+    {% endfor %}
+  }
+}) %}
