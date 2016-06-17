@@ -13,13 +13,15 @@ salt:
   # Salt master config
   master:
     log_level: debug
-    worker_threads: 1
+    worker_threads: 9
+    timeout: 30
 
   # Salt minion config:
   minion:
     log_level: debug
     master: 127.0.0.1
     mine_interval: 2
+    timeout: 30
 
 salt_formulas:
   git_opts:

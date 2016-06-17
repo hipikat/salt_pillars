@@ -41,14 +41,13 @@ base:
 
   # Cluster defaults
   '*':
-    - empire
     - ubiquitous
     - users
     - firewall
     - mine
 
     # TODO: Delete me! (Just for development)
-    #- scratch
+    - scratch
 
   # Default timezone to Perth unless a 'timezone' grain is set
   'not P@timezone':

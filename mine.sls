@@ -5,19 +5,26 @@
 
 {% from "settings.jinja" import settings %}
 
+
+{% set empire = settings.get('empire', {}) %} 
+
+
 mine_functions:
-  network:
+  network_interfaces:
     mine_function: network.interfaces
 
+  {% if 'public_interface' in empire %}
   public_ip:
     mine_function: network.interface_ip
-    iface: {{ settings.public_interface }}
+    iface: {{ empire['public_interface'] }}
+  {% endif %}
 
+  {% if 'private_interface' in empire %}
   private_ip:
     mine_function: network.interface_ip
-    iface: {{ settings.private_interface }}
+    iface: {{ empire['private_interface'] }}
 
   private_subnets:
     mine_function: network.subnets
-    interfaces: {{ settings.private_interface }}
-
+    interfaces: {{ empire['private_interface'] }}
+  {% endif %}

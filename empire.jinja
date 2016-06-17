@@ -1,13 +1,137 @@
 #
-# 
+# Structured, mined data about the machines in this cluster and their
+# interfaces. The calculated variable 'empire' starts as a copy of the
+# 'settings' variable (imported from settings.jinja), and adds:
+#   - a boolean 'crosses_subnets', if any minions live on a different
+#     private subnet to the sovereign. This is intended as a useful flag
+#     for configuration formula.
+#   - a list of all 'minions' talking to the masters, including:
+#     - their 'name' (Salt ID)
+#     - their 'rank' ('sovereign', 'prefect', 'noble' or 'peasant')
+#     - their 'status' ('up' or 'down')
+#     - their 'private_ip' and 'public_ip'
+#     - their 'private_subnets'
+#     - a dictionary, 'interfaces_to', which contains keys matching all
+#       other minions, containing a one-item list with the minion's own
+#       public ip, if it doesn't share any subnets with the "target"
+#       minion, or otherwise a list of private ips, for which the
+#       importing minion shares a subnet with the target.
+#     - dictionaries at 'interfaces_to_sovereign', and
+#       'interfaces_to_prefect', which are shortcuts to the relevant
+#       entries in 'interfaces_to'.
+#     - booleans 'on_sovereign_subnet' and 'on_prefect_subnet',
+#       signaling whether the minion is on the same private subnet
+#       as the sovereign and prefect, respectively.
+#   - the key 'self', which is identical to this minion's entry in the
+#     'minions' list.
+#
+# To achieve all this, the `settings['empire']` dictionary should label
+# a 'sovereign', 'prefect' and list of 'nobles' (every other attached
+# minion will get the rank of 'peasant'. Settings should also contain
+# the interface name for 'public_interface' and 'private_interface' on
+# this particular cluster, and your Salt Mine should be excavating four
+# chunks of data, which you can set in pillars like so (although it's
+# even better to set the names of your public and private interfaces
+# somewhere in your settings or settings['empire'] dicts):
+#
+# mine_functions:
+#   network_interfaces:
+#     mine_function: network.interfaces
+#
+#   public_ip:
+#     mine_function: network.interface_ip
+#     iface: eth0
+#
+#   private_ip:
+#     mine_function: network.interface_ip
+#     iface: eth1
+#
+#   private_subnets:
+#     mine_function: network.subnets
+#     interfaces: eth1
+#
+# Where settings required to fill in data are missing, the empire data
+# will contain `False` and/or `None` values, as appropriate, so always
+# check for truthiness when using the empire dictionary.
+#
+# If you've just installed your mine_functions via pillars, you'll need:
+#   $ salt \* saltutil.refresh_pillar
+#   $ system restart salt-master
+#   $ salt \* mine.update
 ########################################################################
 
 
-{% from "settings.jinja" import settings, meta %}
+{% from "settings.jinja" import settings %}
 
-# 'es' is shorthand for 'empire_settings'
-{% set es = settings.get('empire', {}) %}
-{% set empire = {
-  'name': es['name'],
-  'sovereign': 
-} %}
+
+{% set mine_data = [
+  'network_interfaces',
+  'public_ip',
+  'private_ip',
+  'private_subnets'
+] %}
+
+
+{% set empire = settings.get('empire', {}) %}
+{% set run = salt['saltutil.runner'] %}
+{% set my_name = grains['id'] %}
+
+
+# Inspect the ranks in this empire
+{% set ranks = empire.get('ranks', []) %}
+{% set default_rank = empire.get('default_rank', None) %}
+
+# Dump all useful information we can get about minions into a dict
+{% set minions = {} %}
+
+# Get a full minion list and statuses
+{% set statuses = run('manage.status') %}
+{% for status in ['up', 'down'] %}
+  {% for minion in statuses[status] %}
+    {% do minions.update({minion: {'status': status}}) %}
+  {% endfor %}
+{% endfor %}
+
+{% set all_minions = minions.keys() %}
+
+# Get mine data from all minions
+{% for data_name in mine_data %}
+    {% set minion_data = run('mine.get', tgt='*', fun=data_name) %}
+    {% for minion, data in minion_data.items() %}
+      # Necessary because 1) race conditions and 2) dead/expired minions
+      {% if minion in minions %}
+        {% do minions[minion].update({data_name: data}) %}
+      {% endif %}
+    {% endfor %}
+{% endfor %}
+
+# Determine ranks of the minions
+{% for minion_name in all_minions %}
+  {% for rank in ranks %}
+
+    {% if rank in empire.keys() %}
+      {% set ranking_minions = [empire[rank]] %}
+    {% elif rank ~ '_list' in empire.keys() %}
+      {% set ranking_minions = empire[rank ~ '_list'] %}
+    {% else %}
+      {% continue %}
+    {% endif %}
+
+    {% if minion_name in ranking_minions %}
+      {% do minions[minion_name].update({'rank': rank}) %}
+    {% endif %}
+
+  {% endfor %}
+
+  {% if 'rank' not in minions[minion_name].keys() 
+     and 'default_rank' in empire.keys() %}
+      {% do minions[minion_name].update({'rank': empire['default_rank']}) %}
+  {% endif %}
+
+{% endfor %}
+
+# Add the minion list to the empire
+{% do empire.update({'minions': minions}) %}
+
+# Set a 'self' entry in the empire
+{% do empire.update({'self': minions[my_name]}) %}
