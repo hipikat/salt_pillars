@@ -29,8 +29,8 @@ firewall:
 
   services:
 
-    # Mosh
     60000:61000:
+      service: Mosh
       ips_allow:
         - 0.0.0.0/0
       protos:

@@ -20,9 +20,11 @@
     'sovereign': 'tinymare',
     'noble_list': [],
 
-    'public_interface': 'eth0',
-    'private_interface': 'eth1',
-
-    'trust_subnets': true
+    'interfaces': {
+      'public': 'eth0',
+      'private': 'eth1',
+			'docker': 'docker0'
+    },
+		'interface_data': ['ip', 'broadcast', 'netmask', 'subnet', 'cidr']
   }
 } %}

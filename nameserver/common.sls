@@ -4,13 +4,10 @@
 ####################################################
 
 
-{% from "settings.jinja" import settings %}
+{% from "empire.jinja" import empire %}
 
 
-{% set me = settings['self']['name'] %}
-{% set empire = settings.get('empire', {}) %}
-{% set sovereign = empire.get('sovereign', None) %}
-{% set prefect = empire.get('prefect', None) %}
+{% set self = empire['self'] %}
 
 {% if me == sovereign or me == prefect %}
 # Only set bind data on sovereign and prefect

@@ -15,6 +15,9 @@ salt:
     log_level: debug
     worker_threads: 9
     timeout: 30
+    # Allow master config data in pillars
+    # (Do NOT store sensitive information in the master config!)
+    pillar_opts: True
 
   # Salt minion config:
   minion:

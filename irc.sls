@@ -10,6 +10,7 @@ system_packages:
 firewall:
   services:
     5000:5020:
+      service: IRC proxy
       ips_allow:
         - 0.0.0.0/0
       protos:

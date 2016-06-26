@@ -5,7 +5,9 @@
 
 include:
   # Run secondary private DNS and forwarding for the cluster
-  - nameserver.secondary
+  #- nameserver.secondary
+  - irc
+
 
 empire:
   rank: prefect

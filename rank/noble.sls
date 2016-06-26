@@ -11,7 +11,7 @@ include:
   - saltlick.cloud
 
   # Install a dormant nameserver
-  - nameserver.installed
+  #- nameserver.installed
 
 
 empire:

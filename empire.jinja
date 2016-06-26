@@ -1,7 +1,88 @@
 #
 # Structured, mined data about the machines in this cluster and their
 # interfaces. The calculated variable 'empire' starts as a copy of the
-# 'settings' variable (imported from settings.jinja), and adds:
+# `settings['empire']` dictionary (imported from settings.jinja).,
+# and then:
+#
+# Machine ranks in the empire are taken from the list `empire['ranks']`.
+# For each named rank, either a minion should be named by a matching
+# key in the empire, or there should be a key "[rank_name]_list", with
+# a list of minion names. You can also specify a 'default_rank', which
+# should not appear in the 'ranks' list, e.g.:
+#
+# settings:
+#   empire:
+#     ranks: ['sovereign', 'prefect', 'nobles']
+#     default_rank: peasant
+#     sovereign: bigdog
+#     prefect: smalldog
+#     nobles: []
+#
+# An `empire['minions']` dictionary will be created, wherein the keys
+# match the names of all minions talking to the master(s), and their
+# values are dictionaries containing information about the minions,
+# with the following keys:
+#
+#   - 'id', their Salt ID (thus, the same as the key referencing the
+#     minion's dictionary in the `empire['minions']` dictionary).
+#   - 'responsive', a boolean, `True` if this minion is talking to the
+#     master, at the time this file is imported.
+#   - 'rank', if the minion matches a named rank, or appears in a
+#     [rank]_list, or there is a 'default_rank' named in the empire.
+#
+# The empire settings should contain an 'interfaces' dictionary,
+# listing alises for interfaces the minions may have, along with the
+# names of those interfaces, e.g.:
+#
+# settings:
+#   empire:
+#     interfaces:
+#       private: eth1
+#       public: eth0
+#       docker: docker0
+#
+# ... which will result in minion dictionaries populated by keys
+# matching the interface names, and strings values, where they're
+# available, matching (following our example,) the following:
+#
+# empire:
+#   minions:
+#     bigdog:
+#       id: bigdog
+#       responsive: True
+#       rank: sovereign
+#       private_ip: 10.130.250.167
+#       private_broadcast: 10.130.255.255
+#       private_hwaddr: 04:01:44:95:35:02
+#       private_netmask: 255.255.0.0
+#       private_cidr: 10.130.0.0/16
+#       ...
+#     smalldog:
+#       ...
+#
+#
+#
+#
+#
+#
+#
+# If the empire contains the keys 'private_interface' and/or
+# 'public_interface', which should be set to, for example, 'eth0' and
+# 'eth1', further information will be added to the empire and minions.
+# The empire will recieve keys:
+#
+#   - 'crosses_subnets', a boolean `True` if any minions appear to be
+#     on different private subnets.
+#
+# ... and minions will be populated with keys for:
+#
+#   - 'private_ip' and 'public_ip',
+#   -
+#
+#
+#
+##### dirty
+#
 #   - a boolean 'crosses_subnets', if any minions live on a different
 #     private subnet to the sovereign. This is intended as a useful flag
 #     for configuration formula.
@@ -61,21 +142,32 @@
 ########################################################################
 
 
+{% set INTERFACE_DATA_MAPPING = {
+  'mac': ['hwaddr'],
+  'ip': ['inet', 'address'],
+  'broadcast': ['inet', 'broadcast'],
+  'netmask': ['inet', 'netmask'],
+  'ip6': ['inet6', 'address'],
+  'ip6_prefixlen': ['inet6', 'prefixlen'],
+  'ip6_scope': ['inet6', 'scope'],
+  'up': ['up']
+} %}
+
+
 {% from "settings.jinja" import settings %}
-
-
-{% set mine_data = [
-  'network_interfaces',
-  'public_ip',
-  'private_ip',
-  'private_subnets'
-] %}
 
 
 {% set empire = settings.get('empire', {}) %}
 {% set run = salt['saltutil.runner'] %}
 {% set my_name = grains['id'] %}
 
+{% if 'interface_data' in empire %}
+  {% set interface_data = empire['interface_data'] %}
+{% else %}
+  {% set interface_data = INTERFACE_DATA_MAPPING.keys() %}
+  {% do interface_data.append(['subnet', 'cidr']) %}
+{% endif %}
+  
 
 # Inspect the ranks in this empire
 {% set ranks = empire.get('ranks', []) %}
@@ -92,21 +184,66 @@
   {% endfor %}
 {% endfor %}
 
-{% set all_minions = minions.keys() %}
+# Get minions' network interface data
+{% set minion_interfaces = run('mine.get', tgt='*',
+                                fun=settings.get('iface_mine',
+                                                'network_interfaces')) %}
+{# do empire.update({'minion_interfaces': minion_interfaces}) #}
 
-# Get mine data from all minions
-{% for data_name in mine_data %}
-    {% set minion_data = run('mine.get', tgt='*', fun=data_name) %}
-    {% for minion, data in minion_data.items() %}
-      # Necessary because 1) race conditions and 2) dead/expired minions
-      {% if minion in minions %}
-        {% do minions[minion].update({data_name: data}) %}
+{% for minion, interfaces in minion_interfaces.items() %}
+  {% if minion not in minions.keys() %}
+    {% continue %}
+  {% endif %}
+  # E.g. 'public':    'eth0'
+  {% for iface_alias, iface_name in empire.get('interfaces', {}).items() %}
+    # If this minion's interfaces dictionary contains the next named interface
+    {% if iface_name in interfaces %}
+      {% set iface = interfaces[iface_name] %}
+                                       # Interface data mappings...
+      {% for data_alias, data_path in INTERFACE_DATA_MAPPING.items() %}
+        {% if data_alias in interface_data %}
+          {% set iface_data = iface.get(data_path[0], None) %}
+          {% if iface_data and data_path|length == 2 %}
+            # To do - check for interfaces with multiple IPs(?)
+            {% set iface_data = iface_data[0].get(data_path[1], None) %}
+          {% endif %}
+          {% if iface_data %}
+            {% set data_label = iface_alias ~ '_' ~ data_alias %}
+            # Equivalent (but with only one runner for all minions,) to:
+            #
+            #  % set minions['bigdog']['public_netmask'] = \
+            #        run('mine.get',
+            #            tgt='bigdog',
+            #            fun='network_interfaces'
+            #           )['eth0']['inet']['netmask']
+            #
+            # ... but for every minion, defined interface, and interface data
+            # mapping listed above - if a minion is missing a defined
+            # interface or piece of data, it is omitted (undefined).
+            #
+            # Set a list of interface aliases in empire['interface_data']
+            # to restrict which interface data gets added to the minion.
+            {% do minions[minion].update({data_label: iface_data}) %}
+          {% endif %}
+        {% endif %}
+      {% endfor %}
+
+      # Calculate CIDR if ip and netmask present (and it's wanted)
+      {% set ip = minions[minion].get(iface_alias ~ '_ip', None) %}
+      {% set netmask = minions[minion].get(iface_alias ~ '_netmask', None) %}
+      {% if ip and netmask and 'cidr' in interface_data %}
+        {% set cidr = salt['network.calc_net'](ip, netmask) %}
+        {% do minions[minion].update({iface_alias ~ '_cidr': cidr}) %}
       {% endif %}
-    {% endfor %}
+
+      # TODO: work out subnet for this interface alias
+
+    {% endif %}
+  {% endfor %}
 {% endfor %}
 
 # Determine ranks of the minions
-{% for minion_name in all_minions %}
+{% for minion_name in minions.keys() %}
   {% for rank in ranks %}
 
     {% if rank in empire.keys() %}
@@ -123,7 +260,7 @@
 
   {% endfor %}
 
-  {% if 'rank' not in minions[minion_name].keys() 
+  {% if 'rank' not in minions[minion_name].keys()
      and 'default_rank' in empire.keys() %}
       {% do minions[minion_name].update({'rank': empire['default_rank']}) %}
   {% endif %}
@@ -133,5 +270,11 @@
 # Add the minion list to the empire
 {% do empire.update({'minions': minions}) %}
 
-# Set a 'self' entry in the empire
-{% do empire.update({'self': minions[my_name]}) %}
+# Macros!
+{% macro get_self() -%}
+{{ minions.get(my_name, None) }}
+{% endmacro %}
+
+{% macro get_interface(alias, data) -%}
+{{ minions.get(my_name, {}).get(alias ~ '_' ~ data, None) }}
+{% endmacro %}

@@ -17,18 +17,18 @@
 # specified between the letter and '@' character.
 
 
-{% set settings = {} %}
+{% from "settings.jinja" import settings %}
+
+
+{% set empire = settings.get('empire', {}) %}
 
 base:
   # Configure the node as a 'sovereign', 'prefect', 'noble' or 'peasant'
   # - see pillar/rank/README.txt for more information.
-  {% set empire = settings.get('empire', {}) %}
-  {% set nobles = [] %}
-  {% for rank in ['sovereign', 'prefect'] %}
+  {% for rank in empire.get('ranks', []) %}
     {% if rank in empire %}
-      {% set ruler = empire.get(rank) %}
 
-  '{{ ruler["name"] }}':
+  '{{ empire[rank] }}':
     - rank.{{ rank }}
 
     {% endif %}
@@ -53,4 +53,3 @@ base:
   'not P@timezone':
     - match: compound
     - tz-perth-au
-    - irc
