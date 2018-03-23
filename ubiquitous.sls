@@ -2,11 +2,10 @@
 # Pillar data shared by all machines in the cluster, all the time
 ###############################################################################
 
-
 system:
   package_repositories:
     Felix Krull's Python PPA:
-      ppa: fkrull/deadsnakes
+      ppa: deadsnakes/ppa
 
   packages:
     apt-transport-https: True
