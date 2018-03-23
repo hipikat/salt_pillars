@@ -13,7 +13,7 @@ salt:
   # Salt master config
   master:
     log_level: debug
-    worker_threads: 9
+    worker_threads: 2
     timeout: 30
     # Allow master config data in pillars
     # (Do NOT store sensitive information in the master config!)
@@ -34,8 +34,8 @@ salt_formulas:
     default:
       # URL where the formulas git repositories are downloaded from
       # it will be suffixed with <formula-name>.git
-      #baseurl: https://github.com/hipikat
-      baseurl: git@github.com:hipikat
+      baseurl: https://github.com/hipikat
+      #baseurl: git@github.com:hipikat
       # Directory where Git repositories are downloaded
       basedir: /srv/formulas
       # Update the git repository to the latest version (False by default)
@@ -44,7 +44,7 @@ salt_formulas:
       options:
         rev: master
         remote: github
-        identity: /root/.ssh/id_rsa
+        #identity: /root/.ssh/id_rsa
     #dev:
     #  basedir: /srv/formulas/dev
     #  update: True
@@ -62,7 +62,7 @@ salt_formulas:
   # List of formulas to enable in each environment
   list:
     base:
-      - salt-formula
+      #- salt-formula
       - system-formula
       - iptables-formula
       - users-formula

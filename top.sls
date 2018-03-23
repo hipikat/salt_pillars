@@ -46,9 +46,6 @@ base:
     - firewall
     - mine
 
-    # TODO: Delete me! (Just for development)
-    - scratch
-
   # Default timezone to Perth unless a 'timezone' grain is set
   'not P@timezone':
     - match: compound
