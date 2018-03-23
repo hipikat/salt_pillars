@@ -42,14 +42,13 @@ users:
       - curl
       - exuberant-ctags
       - git
+      - jq
       - mosh
       - screen
       - tree
       - vim
-      - jq
     uses_python_packages:
-     #- fabric
+      - fabric
       - flake8
-     #- httpie
+      - httpie
       - pep8
-     #- yolk

@@ -6,7 +6,10 @@ include:
   - users
 
 system_packages:
+  apt-transport-https: True
+  ca-certificates: True
   curl: True
+  fail2ban: True
   git: True
 
 python_packages:
