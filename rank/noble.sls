@@ -1,5 +1,5 @@
 #
-# Pillar data for persistent boxes
+# Pillar data for upper-eschelon machines
 ########################################
 
 
@@ -10,9 +10,6 @@ include:
   # Include deploy keys, cloud provider auth tokens, etc.
   - secrets
 
-  # Installed (but not necessarily enabled) software
-  - gitlab
-
 
 ####
 # Default system settings for upper-echelon machines
@@ -22,6 +19,7 @@ swapfile: 2G
 system_packages:
   docker.io: True
   docker-compose: True
+  # (Primary controller is also my IRC bouncer.)
   irssi: True
 
 saltlick:
@@ -30,18 +28,9 @@ saltlick:
     url: git@github.com:hipikat/salt_roots.git
     deploy_key: saltlick:deploy_keys:hipikat-github
 
-  salt_pillars:
-    url: git@github.com:hipikat/salt_pillars.git
-    deploy_key: saltlick:deploy_keys:hipikat-github
+  # Install a dormant nameserver
+  #- nameserver.installed
 
-  salt_formulas:
-    # SaltStack-blessed formulas
-    users: https://github.com/saltstack-formulas/users-formula.git
 
-    # Hipikat's Salt formulas
-  {% for formula in ('chippery', 'git-server', 'homeboy', 'saltlick', 'shoaler', 'system') %}
-    {{ formula }}: 
-      url: git@github.com:hipikat/{{ formula }}-formula.git
-      deploy_key: saltlick:deploy_keys:hipikat-github
-  {% endfor %}
-
+empire:
+  rank: noble

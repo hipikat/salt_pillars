@@ -1,0 +1,30 @@
+#
+# Cluster-specific settings, used by other pillars
+########################################################################
+
+
+# Define basic settings for the cluster here
+#
+# NB: This is not how the settings dictionary will look by the time this
+# file has finished processing - some dictionary keys are expanded to
+# include more detail, e.g. {'sovereign': 'sovereign_id'} becomes
+# {'sovereign': {'name': 'sovereign_id', 'private_cidr': '...'} ...
+{% set settings = {
+  'empire': {
+    'name': 'dev',
+    'tld': 'hpk.io',
+
+    'ranks': ['sovereign', 'prefect', 'noble'],
+    'default_rank': 'peasant',
+    'prefect': 'kerry',
+    'sovereign': 'tinymare',
+    'noble_list': [],
+
+    'interfaces': {
+      'public': 'eth0',
+      'private': 'eth1',
+			'docker': 'docker0'
+    },
+		'interface_data': ['ip', 'broadcast', 'netmask', 'subnet', 'cidr']
+  }
+} %}
