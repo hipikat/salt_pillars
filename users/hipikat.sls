@@ -47,8 +47,8 @@ users:
       - screen
       - tree
       - vim
-    uses_python_packages:
-      #- fabric
-      - flake8
-      - httpie
-      - pep8
+    #uses_python_packages:
+    #  - fabric
+    #  - flake8
+    #  - httpie
+    #  - pep8
