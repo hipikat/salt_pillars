@@ -32,8 +32,8 @@ users:
     # Used by the Homeboy formula
     dotfiles:
       url: https://github.com/hipikat/dotfiles.git
-      install_cmd: 'python plumb_files.py --current-user --force'
-      deploy_key: /etc/saltlick/deploy_keys/hipikat-github
+      install_cmd: 'install_dotfiles.sh'
+      #deploy_key: /etc/saltlick/deploy_keys/hipikat-github
 
     #crontabs:
     #  - '@reboot USER=hipikat SHELL=/bin/bash HOME=/home/hipikat PWD=/home/hipikat sleep 5 && cd /home/hipikat && /home/hipikat/.bin/screen-launch irc-etc'
@@ -48,7 +48,7 @@ users:
       - tree
       - vim
     uses_python_packages:
-      - fabric
+      #- fabric
       - flake8
       - httpie
       - pep8

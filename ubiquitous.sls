@@ -3,9 +3,9 @@
 ###############################################################################
 
 system:
-  package_repositories:
-    Felix Krull's Python PPA:
-      ppa: deadsnakes/ppa
+  #package_repositories:
+  #  Felix Krull's Python PPA:
+  #    ppa: deadsnakes/ppa
 
   packages:
     apt-transport-https: True
@@ -13,15 +13,15 @@ system:
     curl: True
     fail2ban: True
     git: True
-    python3.5: True
-    python3.5-venv: True
+    #python3.5: True
+    #python3.5-venv: True
     unzip: True
     virtualenv: True
     virtualenvwrapper: True
     zip: True
 
-  python_packages:
-    autoenv: True
-    flake8: True
-    httpie: True
-    pep8: True
+  #python_packages:
+  #  autoenv: True
+  #  flake8: True
+  #  httpie: True
+  #  pep8: True

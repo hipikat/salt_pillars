@@ -64,6 +64,7 @@ salt_formulas:
     base:
       #- salt-formula
       - system-formula
+      - saltlick-formula
       - iptables-formula
       - users-formula
       - homeboy-formula
