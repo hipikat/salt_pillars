@@ -10,3 +10,5 @@
 
 empire:
   rank: sovereign
+
+swapfile: 4G

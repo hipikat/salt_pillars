@@ -13,7 +13,7 @@ salt:
   # Salt master config
   master:
     log_level: debug
-    worker_threads: 2
+    worker_threads: 8
     timeout: 30
     # Allow master config data in pillars
     # (Do NOT store sensitive information in the master config!)
@@ -69,3 +69,4 @@ salt_formulas:
       - users-formula
       - homeboy-formula
       - bind-formula
+      - nvm-formula

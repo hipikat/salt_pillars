@@ -4,9 +4,11 @@
 
 users:
   hipikat:
-  
+
     # Used by the (SaltStack-blessed) Users formula
     fullname: Adam Wright
+    groups:
+      - wheel
     email: adam@hipikat.org
     shell: /bin/bash
     sudouser: True
@@ -33,6 +35,7 @@ users:
     dotfiles:
       url: https://github.com/hipikat/dotfiles.git
       install_cmd: 'install_dotfiles.sh'
+      dir: .dotfiles
       #deploy_key: /etc/saltlick/deploy_keys/hipikat-github
 
     #crontabs:

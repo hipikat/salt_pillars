@@ -30,6 +30,8 @@ base:
     - firewall
     - mine
 
+    - scratch
+
   # I live in Perth and primarily use Digital Ocean droplets in the Singapore
   # farm, which is in my timezone, so unless an explicit 'timezone' grain is
   # set, I can safely default the system timezone to Australia/Perth.

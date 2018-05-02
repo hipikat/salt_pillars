@@ -3,9 +3,11 @@
 ###############################################################################
 
 system:
-  #package_repositories:
-  #  Felix Krull's Python PPA:
-  #    ppa: deadsnakes/ppa
+  package_repositories:
+    Felix Krull's Python PPA:
+      # Using 'ppa' on Artful Aardvark results in 'artful'; we need xenial
+      #ppa: deadsnakes/ppa
+      name: deb http://ppa.launchpad.net/deadsnakes/ppa/ubuntu xenial main
 
   packages:
     apt-transport-https: True
@@ -13,6 +15,7 @@ system:
     curl: True
     fail2ban: True
     git: True
+    python-software-properties: True
     #python3.5: True
     #python3.5-venv: True
     unzip: True
@@ -20,8 +23,12 @@ system:
     virtualenvwrapper: True
     zip: True
 
-  #python_packages:
-  #  autoenv: True
-  #  flake8: True
-  #  httpie: True
-  #  pep8: True
+  python_packages:
+    autoenv: True
+    flake8: True
+    httpie: True
+    pep8: True
+
+node:
+    install_path: /usr/local/nvm
+
