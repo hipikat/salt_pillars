@@ -2,6 +2,9 @@
 # Pillar data shared by all machines in the cluster, all the time
 ###############################################################################
 
+
+swapfile: 4G
+
 system:
   package_repositories:
     Felix Krull's Python PPA:
@@ -30,5 +33,5 @@ system:
     pep8: True
 
 node:
-    install_path: /usr/local/nvm
+    install_path: /opt/nvm
 
