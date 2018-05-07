@@ -7,10 +7,9 @@ swapfile: 4G
 
 system:
   package_repositories:
-    Felix Krull's Python PPA:
-      # Using 'ppa' on Artful Aardvark results in 'artful'; we need xenial
-      #ppa: deadsnakes/ppa
-      name: deb http://ppa.launchpad.net/deadsnakes/ppa/ubuntu xenial main
+    DeadSnakes (Python):
+      ppa: deadsnakes/ppa
+      #name: deb http://ppa.launchpad.net/deadsnakes/ppa/ubuntu bionic main
 
   packages:
     apt-transport-https: True
@@ -18,7 +17,7 @@ system:
     curl: True
     fail2ban: True
     git: True
-    python-software-properties: True
+    python3-software-properties: True
     #python3.5: True
     #python3.5-venv: True
     unzip: True
