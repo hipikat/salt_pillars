@@ -25,11 +25,11 @@ system:
     virtualenvwrapper: True
     zip: True
 
-  python_packages:
-    autoenv: True
-    flake8: True
-    httpie: True
-    pep8: True
+  #python_packages:
+  #  autoenv: True
+  #  flake8: True
+  #  httpie: True
+  #  pep8: True
 
 node:
     install_path: /opt/nvm
