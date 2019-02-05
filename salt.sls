@@ -1,6 +1,4 @@
 
-{# from "settings.jinja" import settings #}
-
 salt:
   # Suppress warning about md5 hashing
   # (The defaults should just work in a future version of Salt.)
@@ -12,7 +10,7 @@ salt:
 
   # Salt master config
   master:
-    log_level: debug
+    log_level: warning
     worker_threads: 8
     timeout: 30
     # Allow master config data in pillars
@@ -21,7 +19,7 @@ salt:
 
   # Salt minion config:
   minion:
-    log_level: debug
+    log_level: warning
     master: 127.0.0.1
     mine_interval: 2
     timeout: 30
@@ -44,6 +42,7 @@ salt_formulas:
       options:
         rev: master
         remote: github
+        update_head: True
         #identity: /root/.ssh/id_rsa
     #dev:
     #  basedir: /srv/formulas/dev
@@ -62,11 +61,11 @@ salt_formulas:
   # List of formulas to enable in each environment
   list:
     base:
-      #- salt-formula
+      - salt-formula
       - system-formula
-      - saltlick-formula
-      - iptables-formula
+      #- saltlick-formula
+      #- iptables-formula
       - users-formula
-      - homeboy-formula
-      - bind-formula
-      - nvm-formula
+      #- homeboy-formula
+      #- bind-formula
+      #- nvm-formula

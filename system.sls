@@ -3,9 +3,11 @@
 ###############################################################################
 
 
-swapfile: 4G
 
 system:
+
+  swapfile: 4G
+
   package_repositories:
     DeadSnakes (Python):
       ppa: deadsnakes/ppa
