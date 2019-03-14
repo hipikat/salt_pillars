@@ -25,8 +25,8 @@ base:
   # Cluster defaults
   '*':
     - salt
-    #- system
-    #- users
+    - system
+    - users
     #- firewall
     #- mine
 

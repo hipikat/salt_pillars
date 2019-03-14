@@ -66,6 +66,6 @@ salt_formulas:
       #- saltlick-formula
       #- iptables-formula
       - users-formula
-      #- homeboy-formula
+      - homeboy-formula
       #- bind-formula
       #- nvm-formula

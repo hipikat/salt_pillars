@@ -8,6 +8,8 @@ system:
 
   swapfile: 4G
 
+  timezone: 'Australia/Perth'
+
   package_repositories:
     DeadSnakes (Python):
       ppa: deadsnakes/ppa
@@ -22,6 +24,7 @@ system:
     python3-software-properties: True
     #python3.5: True
     #python3.5-venv: True
+    tree: True
     unzip: True
     virtualenv: True
     virtualenvwrapper: True
