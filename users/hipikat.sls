@@ -39,12 +39,8 @@ users:
       url: https://github.com/hipikat/dotfiles.git
       install_cmd: 'install_dotfiles.sh'
       dir: .dotfiles
-      #deploy_key: /etc/saltlick/deploy_keys/hipikat-github
 
-    #crontabs:
-    #  - '@reboot USER=hipikat SHELL=/bin/bash HOME=/home/hipikat PWD=/home/hipikat sleep 5 && cd /home/hipikat && /home/hipikat/.bin/screen-launch irc-etc'
-
-    needs_system_packages:
+    wants_system_packages:
       - curl
       - exuberant-ctags
       - git
@@ -54,7 +50,7 @@ users:
       - tree
       - vim
 
-    needs_home_packages:
+    wants_home_packages:
       - pyenv
       - nvm
 
@@ -63,3 +59,7 @@ users:
     #  - flake8
     #  - httpie
     #  - pep8
+
+    #crontabs:
+    #  - '@reboot USER=hipikat SHELL=/bin/bash HOME=/home/hipikat PWD=/home/hipikat sleep 5 && cd /home/hipikat && /home/hipikat/.bin/screen-launch irc-etc'
+
