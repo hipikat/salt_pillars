@@ -28,12 +28,21 @@ users:
   bT84cAiix5zpvTY2ZNdzboQSTxLjoXqczeDXJ5fmzpEs0lJUBwXxZ6YcbuQ3vxQD8RNxHzgRGGplIrWpiktypgp7yUpr{# -#}
   XCpV87p2+JhnRrp5iJRD1JuJpgjwgQfmEZJtyM1eI4ln8EIarjhAveNhG4G+Zz32wspC72TcDy0n1Ms/Lp0bKDFm639t{# -#}
   LPymQRjkMH3yIypaKx hipikat@bellus
+      - ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCxQz5QEpMCVOfGrTmrthHyYyx7m9hu8CFV8X5XCm8f9xgTVJ{# -#}
+  218arRYGSEAsSGQGmgkGySHEeekRzK09m8iwyCob4revOzo1VdJbFvu8sQ0PJ+paWDI1oMNjMSA4z0sIOtnkAYOI4ER8{# -#}
+  xlja4Bzl92oLsYQF4qGiEzKgnKb2h4JAyKN7OAJfeCePfQoPApxNFF6X9lZ1tI+q8IGYTDJBiwb0DJpG0cii1QQT9Fg2{# -#}
+  3oK+S+wasTniDlXtCbV3PsqcqBEMaf4QLp+22HIXeBcqDVy4N8iaS5w7v7YmwogNWilbXO60ncCXBM/mcCSm4xBOic2i{# -#}
+  9JIZ2WrAHQTv7l41m5RzujvpI3Yy3D7EOXwrhSSSMr7mApWaT69AIxyxxfTB6xhSqeDVcOpPKexLYWBeRa/26r7TNzxH{# -#}
+  AzfzJlsJCepaxSTerw4cIIvKnXwBZb/xXSVZ9aNooBKyQP9Whk6u8MAE3LIRfpP3SzlkKcU4BsW8Tvi5tQJEDh13KHBc{# -#}
+  XhJ1oZNSc0xGctmsWOfQLJgpAFm8eUD1b9sr7vklCXoE15k6KW3xWM70gCkgnKC04/r2zkjhS5WblLcJTV4VsUkmmjVd{# -#}
+  H93dKxr3YjkLs1M8taL7jTVDjA71oKw2fONOL01Ck8Uam19iRyFQL8xFLN0Gdp5NK1OZew1p6nTjre4tCTjQ{# -#}
+  == new-mac-2020-01-02
   
     # Used by the Homeboy formula
     dotfiles:
       url: https://github.com/hipikat/dotfiles.git
-      install_cmd: 'python plumb_files.py --current-user --force'
-      deploy_key: /etc/saltlick/deploy_keys/hipikat-github
+      install_cmd: './plumb_files.py --current-user --force'
+      #deploy_key: /etc/saltlick/deploy_keys/hipikat-github
 
     #crontabs:
     #  - '@reboot USER=hipikat SHELL=/bin/bash HOME=/home/hipikat PWD=/home/hipikat sleep 5 && cd /home/hipikat && /home/hipikat/.bin/screen-launch irc-etc'
@@ -47,6 +56,12 @@ users:
       - screen
       - tree
       - vim
+      # For Python package "cryptography"
+      - libssl-dev
+      - libffi-dev
+      # For Python package "lxml"
+      - libxml2-dev
+      - libxslt1-dev
     uses_python_packages:
       - fabric
       - flake8

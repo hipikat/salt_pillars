@@ -12,8 +12,8 @@ salt:
 
   # Salt master config
   master:
-    log_level: debug
-    worker_threads: 9
+    log_level: warning
+    worker_threads: 4
     timeout: 30
     # Allow master config data in pillars
     # (Do NOT store sensitive information in the master config!)
@@ -22,7 +22,7 @@ salt:
   # Salt minion config:
   minion:
     log_level: debug
-    master: 127.0.0.1
+   #master: 127.0.0.1
     mine_interval: 2
     timeout: 30
 
@@ -39,17 +39,32 @@ salt_formulas:
       # Directory where Git repositories are downloaded
       basedir: /srv/formulas
       # Update the git repository to the latest version (False by default)
-      update: True
+      update: False
       # Options passed directly to the git.latest state
       options:
         rev: master
         remote: github
         identity: /root/.ssh/id_rsa
-    #dev:
-    #  basedir: /srv/formulas/dev
-    #  update: True
-    #  options:
-    #    rev: develop
+
+    dev:
+      basedir: /srv/formulas-dev
+      update: True
+      options:
+        rev: develop
+
+    upstream:
+      baseurl: https://github.com/saltstack-formulas/
+      update: True
+
+  # List of formulas to enable in each environment
+  list:
+    base:
+      - salt-formula
+     #- iptables-formula
+      - users-formula
+      - homeboy-formula
+     #- bind-formula
+      - system-formula
 
   # Options of the file.directory state that creates the directory where
   # the git repositories of the formulas are stored
@@ -58,13 +73,3 @@ salt_formulas:
     user: root
     group: root
     mode: 755
-
-  # List of formulas to enable in each environment
-  list:
-    base:
-      - salt-formula
-      - system-formula
-      - iptables-formula
-      - users-formula
-      - homeboy-formula
-      - bind-formula
