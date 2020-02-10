@@ -34,8 +34,10 @@ salt_formulas:
     default:
       # URL where the formulas git repositories are downloaded from
       # it will be suffixed with <formula-name>.git
-      #baseurl: https://github.com/hipikat
-      baseurl: git@github.com:hipikat
+      #baseurl: "https://github.com/hipikat"
+      #baseurl: git@github.com:hipikat
+      baseurl: https://github.com/saltstack-formulas/
+
       # Directory where Git repositories are downloaded
       basedir: /srv/formulas
       # Update the git repository to the latest version (False by default)
@@ -44,27 +46,15 @@ salt_formulas:
       options:
         rev: master
         remote: github
-        identity: /root/.ssh/id_rsa
-
-    dev:
-      basedir: /srv/formulas-dev
-      update: True
-      options:
-        rev: develop
-
-    upstream:
-      baseurl: https://github.com/saltstack-formulas/
-      update: True
+        #identity: /root/.ssh/salt-master-deploy
 
   # List of formulas to enable in each environment
   list:
     base:
       - salt-formula
-     #- iptables-formula
       - users-formula
-      - homeboy-formula
-     #- bind-formula
-      - system-formula
+      #- homeboy-formula
+      #- system-formula
 
   # Options of the file.directory state that creates the directory where
   # the git repositories of the formulas are stored
