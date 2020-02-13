@@ -36,7 +36,7 @@ salt_formulas:
       # it will be suffixed with <formula-name>.git
       #baseurl: "https://github.com/hipikat"
       #baseurl: git@github.com:hipikat
-      baseurl: https://github.com/saltstack-formulas/
+      baseurl: https://github.com/hipikat
 
       # Directory where Git repositories are downloaded
       basedir: /srv/formulas
