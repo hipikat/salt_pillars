@@ -65,6 +65,8 @@ salt_formulas:
       - homeboy-formula
      #- bind-formula
       - system-formula
+      - nginx-formula
+      - php-formula
 
   # Options of the file.directory state that creates the directory where
   # the git repositories of the formulas are stored

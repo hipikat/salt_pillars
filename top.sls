@@ -28,7 +28,8 @@ base:
     - ubiquitous
     - users
     - firewall
-    - mine
+    - salt_mine
+    - web
 
   # I live in Perth and primarily use Digital Ocean droplets in the Singapore
   # farm, which is in my timezone, so unless an explicit 'timezone' grain is
