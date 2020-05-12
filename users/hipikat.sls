@@ -51,6 +51,7 @@ users:
       - curl
       - exuberant-ctags
       - git
+      - irssi
       - jq
       - mosh
       - screen

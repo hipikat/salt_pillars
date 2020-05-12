@@ -59,6 +59,14 @@ salt_formulas:
 
       - nginx-formula
       - php-formula
+      - mysql-formula
+      - vsftpd-formula
+      - ufw-formula
+
+      - openssh-formula
+      - letsencrypt-formula
+
+
 
   # Options of the file.directory state that creates the directory where
   # the git repositories of the formulas are stored
