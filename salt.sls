@@ -66,8 +66,6 @@ salt_formulas:
       - openssh-formula
       - letsencrypt-formula
 
-
-
   # Options of the file.directory state that creates the directory where
   # the git repositories of the formulas are stored
   basedir_opts:
@@ -75,3 +73,9 @@ salt_formulas:
     user: root
     group: root
     mode: 755
+
+system:
+  symlinks:
+    /srv/salt/_modules/ufw.py: /srv/formulas/ufw-formula/_modules/ufw.py
+    /srv/salt/_states/ufw.py: /srv/formulas/ufw-formula/_states/ufw.py
+
