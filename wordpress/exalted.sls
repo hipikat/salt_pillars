@@ -9,20 +9,6 @@ users:
       url: https://github.com/hipikat/dotfiles.git
       install_cmd: './plumb_files.py --current-user --force'
 
-
-letsencrypt:
-  domainsets:
-    www:
-      - {{ domain_name }}
-      - {{ domain_name }}
-    #mail:
-    #  - imap.example.com
-    #  - smtp.example.com
-    #  - mail.example.com
-    #intranet:
-    #  - intranet.example.com
-
-
 mysql:
   database:
     - exalted
@@ -51,18 +37,19 @@ nginx:
         overwrite: true
         config:
           - server:
-              - server_name: www.{{ domain_name }}
-              - listen:
-                  - '80'
-                  #- '443 ssl'
-              - rewrite: ^/(.*)$ http://{{ domain_name }}/$1 permanent
-          - server:
               - server_name: {{ domain_name }}
               - listen:
                   - '80'
-                  #- '443 ssl'
+              - rewrite: "^/(.*)$ https://{{ domain_name }}/$1 permanent"
+          - server:
+              - server_name: {{ domain_name }}
+              - listen:
+                  - '443 ssl'
+              - include: '/etc/letsencrypt/options-ssl-nginx.conf'
+              - ssl_certificate: "/etc/letsencrypt/live/{{ domain_name }}/fullchain.pem"
+              - ssl_certificate_key: "/etc/letsencrypt/live/{{ domain_name }}/privkey.pem"
+              - ssl_dhparam: "/etc/letsencrypt/ssl-dhparams.pem"
               - client_max_body_size: 128m
-              #- root: '/var/www/wp-exalted/'
               - root: '/home/exalted/wordpress/'
               - index: 'index.php index.html index.htm'
               - location ~ .htm:
@@ -73,4 +60,12 @@ nginx:
                   - include: "fastcgi_params"
                   - fastcgi_param: "SCRIPT_FILENAME    $document_root$fastcgi_script_name"
                   - fastcgi_param: "SCRIPT_NAME        $fastcgi_script_name"
-
+          - server:
+              - server_name: "www.{{ domain_name }}"
+              - listen:
+                  - '443 ssl'
+              - include: "/etc/letsencrypt/options-ssl-nginx.conf"
+              - ssl_certificate: "/etc/letsencrypt/live/{{ domain_name }}/fullchain.pem"
+              - ssl_certificate_key: "/etc/letsencrypt/live/{{ domain_name }}/privkey.pem"
+              - ssl_dhparam: "/etc/letsencrypt/ssl-dhparams.pem"
+              - rewrite: "^/(.*)$ https://{{ domain_name }}/$1 permanent"

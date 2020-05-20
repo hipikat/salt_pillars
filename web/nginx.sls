@@ -1,5 +1,14 @@
 
 
+include:
+  - letsencrypt
+
+
+system:
+  packages:
+    python-certbot-nginx: True
+
+
 # Web server configuration
 nginx:
   install_from_ppa: true
@@ -35,7 +44,7 @@ nginx:
         overwrite: true
         config:
           - server:
-              - server_name: localhost
+              #- server_name: localhost
               - listen:
                   - '80 default_server'
                   #- '443 ssl'

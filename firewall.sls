@@ -2,6 +2,9 @@
 # Firewall configuration - using ufw-formula
 ###############################################################################
 
+{%- from "secrets.sls" import development, development_ips %}
+
+
 ufw:
   enabled: True
 
@@ -21,18 +24,24 @@ ufw:
 
   services:
 
-    # Allow 80/tcp (http) traffic from only two remote addresses.
+    {% if development %}
+    # Allow 80/tcp (http) traffic only from development machines.
     http:
       protocol: tcp
       from_addr:
-        - 124.171.8.244
+        {% for development_ip in development_ips %}
+        - {{ development_ip }}
+        {% endfor %}
       comment: Restrict web access to home (development) IP 
 
     https:
       protocol: tcp
       from_addr:
-        - 124.171.8.244
+        {% for development_ip in development_ips %}
+        - {{ development_ip }}
+        {% endfor %}
       comment: Restrict (secure) web access to home (development) IP 
+    {% endif %}
 
     ftps:
       comment: FTP over SSL
@@ -41,8 +50,10 @@ ufw:
   applications:
     mosh:
       allow: true
-    #nginx:
-    #  enabled: true
+    {% if not development %}
+    Nginx Full:
+      enabled: false
+    {% endif %}
     OpenSSH:
       allow: true
 

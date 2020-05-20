@@ -74,6 +74,8 @@ salt_formulas:
     group: root
     mode: 755
 
+
+# salt.formulas doesn't symlink custom execution modules and states for us :(
 system:
   symlinks:
     /srv/salt/_modules/ufw.py: /srv/formulas/ufw-formula/_modules/ufw.py

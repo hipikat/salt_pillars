@@ -34,12 +34,16 @@ base:
     - vsftpd
     - web
 
+  # Master controller
+  'orchard':
+    #- irc
+    - games
+
   # Per-machine projects
   'apricot':
     - wordpress.exalted
-    - games
 
-  # Default timezone for myself and my boxen
-  'not P@timezone:':
-    - match: compound
-    - tz-perth-au
+  # Don't do this, they say everything should default to UTC
+  #'not P@timezone:':
+  #  - match: compound
+  #    # - tz-perth-au
