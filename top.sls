@@ -36,7 +36,7 @@ base:
 
   # Master controller
   'orchard':
-    #- irc
+    - irc
     - games
 
   # Per-machine projects

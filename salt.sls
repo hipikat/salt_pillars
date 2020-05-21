@@ -1,5 +1,5 @@
 
-{# from "settings.jinja" import settings #}
+{% from "secrets.sls" import services %}
 
 salt:
   # Suppress warning about md5 hashing
@@ -22,9 +22,14 @@ salt:
   # Salt minion config:
   minion:
     log_level: debug
-   #master: 127.0.0.1
+    #master: 127.0.0.1
     mine_interval: 2
     timeout: 30
+    grains:
+      services:
+        {% if 'wordpress' in services %}
+        wordpress: {{ services.wordpress }}
+        {% endif %}
 
 salt_formulas:
   git_opts:
