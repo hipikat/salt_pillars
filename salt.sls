@@ -22,7 +22,7 @@ salt:
   # Salt minion config:
   minion:
     log_level: debug
-    #master: 127.0.0.1
+    master: salt
     mine_interval: 2
     timeout: 30
     grains:
