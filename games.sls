@@ -1,5 +1,0 @@
-
-
-system:
-  packages:
-    zangband: True
