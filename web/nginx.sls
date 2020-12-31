@@ -1,12 +1,12 @@
 
 
-include:
-  - letsencrypt
+#include:
+#  - letsencrypt
 
 
-system:
-  packages:
-    python-certbot-nginx: True
+#system:
+#  packages:
+#    python-certbot-nginx: True
 
 
 # Web server configuration
@@ -49,15 +49,15 @@ nginx:
                   - '80'
                   - '443 ssl'
               - root: '/var/www/html/'
-              - index: 'index.php index.html index.htm'
+              - index: 'index.html index.htm'
               - location ~ .htm:
                   - try_files: '$uri $uri/ =404'
                   - autoindex: "on"
-              - 'location ~* \.php$':
-                  - fastcgi_pass: "unix:/var/run/php/php7.3-fpm.sock"
-                  - include: "fastcgi_params"
-                  - fastcgi_param: "SCRIPT_FILENAME    $document_root$fastcgi_script_name"
-                  - fastcgi_param: "SCRIPT_NAME        $fastcgi_script_name"
+              #- 'location ~* \.php$':
+              #    - fastcgi_pass: "unix:/var/run/php/php7.3-fpm.sock"
+              #    - include: "fastcgi_params"
+              #    - fastcgi_param: "SCRIPT_FILENAME    $document_root$fastcgi_script_name"
+              #    - fastcgi_param: "SCRIPT_NAME        $fastcgi_script_name"
 
   #certificates_path: '/etc/nginx/ssl'
 

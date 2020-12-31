@@ -1,12 +1,12 @@
 
 
-system:
-  packages:
-    phpmyadmin: True
-    certbot: True
+#system:
+#  packages:
+#    phpmyadmin: True
+#    certbot: True
 
 
 include:
-  - web.letsencrypt
+  #- web.letsencrypt
   - web.nginx
 
