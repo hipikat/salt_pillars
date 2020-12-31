@@ -46,8 +46,8 @@ nginx:
           - server:
               #- server_name: localhost
               - listen:
-                  - '80 default_server'
-                  #- '443 ssl'
+                  - '80'
+                  - '443 ssl'
               - root: '/var/www/html/'
               - index: 'index.php index.html index.htm'
               - location ~ .htm:

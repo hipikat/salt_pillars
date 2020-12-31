@@ -9,6 +9,4 @@ system:
 include:
   - web.letsencrypt
   - web.nginx
-  - web.mysql
-  - web.php
 

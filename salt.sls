@@ -1,6 +1,28 @@
 
 {% from "secrets.sls" import services %}
 
+
+# TODO: manage your pillar (and roots??) directories here?
+# AND ensure secrets.sls isn't readable by the public user.
+
+
+system:
+  git_latest:
+    salt_roots:
+      name: git@github.com:hipikat/salt_roots.git
+      target: /srv/salt
+      user: root
+      #identity: /etc/salt/deploy_keys/hipikat-githubrsa
+    salt_pillars:
+      # ...
+
+  managed_files:
+    salt_pillar_secrets:
+      name: /srv/pillar/secrets.sls
+      mode: 660
+
+
+
 salt:
   # Suppress warning about md5 hashing
   # (The defaults should just work in a future version of Salt.)
@@ -21,15 +43,15 @@ salt:
 
   # Salt minion config:
   minion:
-    log_level: debug
+    log_level: warning
     master: salt
     mine_interval: 2
     timeout: 30
+    {% if 'wordpress' in services %}
     grains:
       services:
-        {% if 'wordpress' in services %}
         wordpress: {{ services.wordpress }}
-        {% endif %}
+    {% endif %}
 
 salt_formulas:
   git_opts:
@@ -62,14 +84,15 @@ salt_formulas:
       - users-formula
       - homeboy-formula
 
+      - vsftpd-formula
       - nginx-formula
       - php-formula
       - mysql-formula
-      - vsftpd-formula
-      - ufw-formula
-
       - openssh-formula
       - letsencrypt-formula
+      - ufw-formula
+
+      - wordpress-formula
 
   # Options of the file.directory state that creates the directory where
   # the git repositories of the formulas are stored
@@ -80,7 +103,8 @@ salt_formulas:
     mode: 755
 
 
-# salt.formulas doesn't symlink custom execution modules and states for us :(
+# salt.formulas doesn't symlink custom execution modules and states for us,
+# so we have our own 'system' formula do it for us
 system:
   symlinks:
     /srv/salt/_modules/ufw.py: /srv/formulas/ufw-formula/_modules/ufw.py

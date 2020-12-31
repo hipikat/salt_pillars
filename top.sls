@@ -27,6 +27,9 @@ base:
   '*':
     - salt
     - salt_mine
+
+  # Not on my Mac please
+  'G@kernel:Linux':
     - packages
     - firewall
     - users
@@ -38,10 +41,11 @@ base:
   'orchard':
     - irc
     - games
+    - sites.hipikat
 
   # Per-machine projects
   'apricot':
-    - wordpress.exalted
+    - sites.exalted
 
   # Don't do this, they say everything should default to UTC
   #'not P@timezone:':

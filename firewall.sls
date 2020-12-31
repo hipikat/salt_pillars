@@ -2,7 +2,7 @@
 # Firewall configuration - using ufw-formula
 ###############################################################################
 
-{%- from "secrets.sls" import development, development_ips %}
+{%- from "secrets.sls" import development, development_ips, salt_master %}
 
 
 ufw:
@@ -56,6 +56,10 @@ ufw:
     {% endif %}
     OpenSSH:
       allow: true
+    {% if salt_master %}
+    Salt:
+      allow: true
+    {% endif %}
 
   # Allow all traffic in on the specified interface
   interfaces:
